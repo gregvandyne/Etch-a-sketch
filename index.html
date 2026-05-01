@@ -64,7 +64,7 @@
       width: 100%;
       max-width: var(--measure);
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 20px;
     }
 
     .container--wide { max-width: var(--measure-wide); }
@@ -72,7 +72,7 @@
     /* Top bar */
     .topbar {
       border-bottom: 1px solid var(--bg-rule);
-      padding: 22px 0;
+      padding: 16px 0;
       position: sticky;
       top: 0;
       background: rgba(248, 246, 242, 0.92);
@@ -83,68 +83,69 @@
     .topbar__inner {
       max-width: var(--measure-wide);
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 20px;
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: 24px;
+      gap: 16px;
     }
     .brand {
       font-family: var(--serif);
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 500;
       color: var(--ink);
       letter-spacing: -0.01em;
     }
     .topbar__cta {
       font-family: var(--sans);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--ink);
       border-bottom: 1px solid var(--ink);
       padding-bottom: 2px;
+      white-space: nowrap;
     }
     .topbar__cta:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
     /* Hero */
     .hero {
-      padding: 96px 0 88px;
+      padding: 64px 0 56px;
       border-bottom: 1px solid var(--bg-rule);
     }
     .hero__eyebrow {
       font-family: var(--sans);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 28px;
+      margin-bottom: 22px;
     }
     .hero h1 {
-      font-size: clamp(36px, 5.6vw, 60px);
+      font-size: clamp(38px, 6vw, 60px);
       line-height: 1.04;
       letter-spacing: -0.022em;
       font-weight: 400;
       max-width: 16ch;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     .hero__sub {
       font-family: var(--sans);
-      font-size: 19px;
+      font-size: 18px;
       line-height: 1.55;
       color: var(--ink-muted);
       max-width: 36em;
-      margin: 0 0 36px;
+      margin: 0 0 28px;
     }
     .hero__credit {
       font-family: var(--serif);
       font-style: italic;
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.5;
       color: var(--accent);
       max-width: 36em;
-      margin: 0 0 44px;
-      padding-left: 16px;
+      margin: 0 0 36px;
+      padding-left: 14px;
       border-left: 1px solid var(--accent);
     }
 
@@ -155,55 +156,60 @@
       font-size: 15px;
       font-weight: 500;
       letter-spacing: 0.01em;
-      padding: 16px 26px;
+      padding: 16px 24px;
       background: var(--ink);
       color: var(--bg);
       border: 1px solid var(--ink);
       border-radius: 2px;
       cursor: pointer;
+      text-align: center;
+      min-height: 48px;
       transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
     }
     .btn:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
     .btn--ghost { background: transparent; color: var(--ink); }
     .btn--ghost:hover { background: var(--ink); color: var(--bg); }
+    .btn--block { display: block; width: 100%; }
+    .btn--hero { display: block; width: 100%; max-width: 360px; }
+    @media (min-width: 720px) { .btn--hero { display: inline-block; width: auto; } }
 
     /* Section base */
-    section { padding: 88px 0; border-bottom: 1px solid var(--bg-rule); }
+    section { padding: 64px 0; border-bottom: 1px solid var(--bg-rule); }
     section:last-of-type { border-bottom: none; }
 
     .section__label {
       font-family: var(--sans);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .section__title {
-      font-size: clamp(28px, 3.6vw, 40px);
+      font-size: clamp(28px, 4.4vw, 40px);
       line-height: 1.12;
       letter-spacing: -0.018em;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       max-width: 22ch;
     }
 
     /* Pattern (What we see) */
     .pattern p {
-      font-size: 18px;
-      line-height: 1.65;
+      font-size: 17px;
+      line-height: 1.6;
       color: var(--ink);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .pattern__close {
       font-family: var(--serif);
       font-style: italic;
-      font-size: 22px;
+      font-size: clamp(20px, 2.6vw, 22px);
       line-height: 1.4;
       color: var(--ink);
       border-top: 1px solid var(--bg-rule);
-      padding-top: 28px;
-      margin-top: 36px;
+      padding-top: 24px;
+      margin-top: 28px;
     }
 
     /* Who this is for */
@@ -216,9 +222,9 @@
     .qual__list li {
       counter-increment: qual;
       position: relative;
-      padding: 24px 0 24px 56px;
+      padding: 22px 0 22px 44px;
       border-top: 1px solid var(--bg-rule);
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.55;
       color: var(--ink);
     }
@@ -227,12 +233,20 @@
       content: counter(qual, decimal-leading-zero);
       position: absolute;
       left: 0;
-      top: 26px;
+      top: 24px;
       font-family: var(--serif);
       font-style: italic;
-      font-size: 16px;
+      font-size: 15px;
       color: var(--accent);
       letter-spacing: 0.02em;
+    }
+    .qual__close {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--ink);
+      margin: 32px 0 0;
     }
 
     /* Methodology */
@@ -250,35 +264,43 @@
       gap: 0;
     }
     .phase {
-      display: grid;
-      grid-template-columns: 88px 1fr;
-      gap: 24px;
-      padding: 36px 0;
+      padding: 28px 0;
       border-top: 1px solid var(--bg-rule);
     }
     .phase:last-child { border-bottom: 1px solid var(--bg-rule); }
     .phase__num {
       font-family: var(--serif);
       font-style: italic;
-      font-size: 14px;
-      letter-spacing: 0.06em;
+      font-size: 13px;
+      letter-spacing: 0.08em;
       color: var(--accent);
-      padding-top: 8px;
+      margin-bottom: 10px;
+      display: block;
     }
     .phase__name {
       font-family: var(--serif);
-      font-size: clamp(26px, 3vw, 34px);
+      font-size: clamp(26px, 4vw, 34px);
       line-height: 1.1;
       letter-spacing: -0.016em;
       font-weight: 400;
-      margin: 0 0 14px;
+      margin: 0 0 12px;
     }
     .phase__body {
-      font-size: 17px;
-      line-height: 1.65;
+      font-size: 16.5px;
+      line-height: 1.6;
       color: var(--ink-muted);
       max-width: 38em;
       margin: 0;
+    }
+    .methodology__close {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--ink);
+      margin: 36px 0 0;
+      padding-top: 28px;
+      border-top: 1px solid var(--bg-rule);
     }
 
     /* Tiers */
@@ -298,7 +320,7 @@
     .tier {
       background: transparent;
       border: 1px solid var(--bg-rule);
-      padding: 36px 32px 32px;
+      padding: 28px 24px 28px;
       display: flex;
       flex-direction: column;
     }
@@ -447,15 +469,16 @@
       margin-bottom: 16px;
     }
     .book__input {
-      flex: 1 1 240px;
+      flex: 1 1 100%;
       background: transparent;
       border: 1px solid rgba(248, 246, 242, 0.35);
       color: var(--bg);
       font-family: var(--sans);
-      font-size: 15px;
+      font-size: 16px;
       padding: 14px 16px;
       border-radius: 2px;
       outline: none;
+      min-height: 48px;
       transition: border-color 160ms ease;
     }
     .book__input::placeholder { color: rgba(248, 246, 242, 0.45); }
@@ -476,7 +499,7 @@
     /* Diagnostic CTA */
     .diagnostic {
       text-align: left;
-      padding: 112px 0;
+      padding: 80px 0;
     }
     .diagnostic h2 {
       font-size: clamp(30px, 4.2vw, 46px);
@@ -554,11 +577,39 @@
 
     /* Responsive */
     @media (min-width: 720px) {
+      .container { padding: 0 24px; }
+      .topbar { padding: 22px 0; }
+      .topbar__inner { padding: 0 24px; }
+      .brand { font-size: 22px; }
+      .topbar__cta { font-size: 14px; }
       .hero { padding: 128px 0 112px; }
+      .hero__eyebrow { font-size: 13px; margin-bottom: 28px; }
+      .hero h1 { margin-bottom: 28px; }
+      .hero__sub { font-size: 19px; margin-bottom: 36px; }
+      .hero__credit { font-size: 18px; margin-bottom: 44px; padding-left: 16px; }
       section { padding: 104px 0; }
-      .phase { grid-template-columns: 120px 1fr; gap: 40px; padding: 44px 0; }
+      .section__label { font-size: 12px; margin-bottom: 24px; }
+      .section__title { margin-bottom: 28px; }
+      .pattern p { font-size: 18px; line-height: 1.65; margin-bottom: 20px; }
+      .pattern__close { padding-top: 28px; margin-top: 36px; }
+      .qual__list li { padding: 24px 0 24px 56px; font-size: 18px; }
+      .qual__list li::before { top: 26px; font-size: 16px; }
+      .phase {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 40px;
+        padding: 44px 0;
+      }
+      .phase__num { margin-bottom: 0; padding-top: 8px; font-size: 14px; letter-spacing: 0.06em; }
+      .phase__name { margin-bottom: 14px; }
+      .phase__body { font-size: 17px; line-height: 1.65; }
+      .methodology__close { font-size: 20px; margin-top: 44px; padding-top: 32px; }
+      .tier { padding: 36px 32px 32px; }
       .about__layout { grid-template-columns: 140px 1fr; gap: 48px; align-items: start; }
       .about__portrait { width: 140px; height: 140px; font-size: 44px; }
+      .book__form { flex-wrap: wrap; }
+      .book__input { flex: 1 1 240px; font-size: 15px; }
+      .diagnostic { padding: 112px 0; }
     }
 
     @media (min-width: 960px) {
@@ -585,7 +636,7 @@
         <h1 id="hero-title">Your clinical AI is built. Adoption is the next frontier.</h1>
         <p class="hero__sub">A customer success operating system for clinical AI and healthcare SaaS startups. From zero CS to a working operation in 90 days.</p>
         <p class="hero__credit">100% gross retention. 85% pilot-to-paid conversion. Across hundreds of acute care and SNF deployments.</p>
-        <a href="#diagnostic" class="btn">Book a 30-Minute CS Diagnostic</a>
+        <a href="#diagnostic" class="btn btn--hero">Book a 30-Minute CS Diagnostic</a>
       </div>
     </section>
 
@@ -609,6 +660,7 @@
           <li>Your pilots are praised in the demo and stalled in procurement. Design partners are not converting to paid contracts at the rate your model assumed.</li>
           <li>You are about to hire your first head of customer success and you do not yet have the playbook they will inherit.</li>
         </ol>
+        <p class="qual__close">If that is where you are, the next ninety days look different.</p>
       </div>
     </section>
 
@@ -667,6 +719,7 @@
             </div>
           </article>
         </div>
+        <p class="methodology__close">By day ninety, the operating system is yours. The renewal cycle runs on it. So does the next hire.</p>
       </div>
     </section>
 
