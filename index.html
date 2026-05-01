@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fieldcraft — A customer success operating system for clinical AI</title>
+  <meta name="description" content="Fieldcraft takes Seed to Series B clinical AI and healthcare SaaS startups from zero customer success function to a working operation in 90 days.">
+  <meta property="og:title" content="Fieldcraft — A customer success operating system for clinical AI">
+  <meta property="og:description" content="From zero CS to a working operation in 90 days. Built by an operator who has lived the adoption problem on both sides of the table.">
+  <meta property="og:image" content="og-image.jpg">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#F8F6F2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F8F6F2;
+      --bg-rule: #E5E0D7;
+      --ink: #0E0E0C;
+      --ink-muted: #4A4A45;
+      --ink-soft: #6E6E66;
+      --accent: #7A1F1F;
+      --accent-deep: #5C1717;
+      --serif: "Fraunces", "Source Serif Pro", Georgia, serif;
+      --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --measure: 720px;
+      --measure-wide: 960px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.6;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color 160ms ease; }
+    a:hover { color: var(--accent-deep); }
+
+    img { max-width: 100%; height: auto; display: block; }
+
+    p { margin: 0 0 1em; }
+
+    h1, h2, h3, h4 {
+      font-family: var(--serif);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--measure);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .container--wide { max-width: var(--measure-wide); }
+
+    /* Top bar */
+    .topbar {
+      border-bottom: 1px solid var(--bg-rule);
+      padding: 22px 0;
+      position: sticky;
+      top: 0;
+      background: rgba(248, 246, 242, 0.92);
+      backdrop-filter: saturate(140%) blur(8px);
+      -webkit-backdrop-filter: saturate(140%) blur(8px);
+      z-index: 50;
+    }
+    .topbar__inner {
+      max-width: var(--measure-wide);
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .topbar__cta {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 2px;
+    }
+    .topbar__cta:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* Hero */
+    .hero {
+      padding: 96px 0 88px;
+      border-bottom: 1px solid var(--bg-rule);
+    }
+    .hero__eyebrow {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 5.6vw, 60px);
+      line-height: 1.04;
+      letter-spacing: -0.022em;
+      font-weight: 400;
+      max-width: 16ch;
+      margin-bottom: 28px;
+    }
+    .hero__sub {
+      font-family: var(--sans);
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--ink-muted);
+      max-width: 36em;
+      margin: 0 0 36px;
+    }
+    .hero__credit {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--accent);
+      max-width: 36em;
+      margin: 0 0 44px;
+      padding-left: 16px;
+      border-left: 1px solid var(--accent);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      padding: 16px 26px;
+      background: var(--ink);
+      color: var(--bg);
+      border: 1px solid var(--ink);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+    .btn:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    .btn--ghost { background: transparent; color: var(--ink); }
+    .btn--ghost:hover { background: var(--ink); color: var(--bg); }
+
+    /* Section base */
+    section { padding: 88px 0; border-bottom: 1px solid var(--bg-rule); }
+    section:last-of-type { border-bottom: none; }
+
+    .section__label {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .section__title {
+      font-size: clamp(28px, 3.6vw, 40px);
+      line-height: 1.12;
+      letter-spacing: -0.018em;
+      margin-bottom: 28px;
+      max-width: 22ch;
+    }
+
+    /* Pattern (What we see) */
+    .pattern p {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+    .pattern__close {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.4;
+      color: var(--ink);
+      border-top: 1px solid var(--bg-rule);
+      padding-top: 28px;
+      margin-top: 36px;
+    }
+
+    /* Who this is for */
+    .qual__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: qual;
+    }
+    .qual__list li {
+      counter-increment: qual;
+      position: relative;
+      padding: 24px 0 24px 56px;
+      border-top: 1px solid var(--bg-rule);
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+    .qual__list li:last-child { border-bottom: 1px solid var(--bg-rule); }
+    .qual__list li::before {
+      content: counter(qual, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 26px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    /* Methodology */
+    .methodology .section__title { max-width: 24ch; }
+    .methodology__lede {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      max-width: 36em;
+      margin-bottom: 56px;
+    }
+    .phase-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .phase {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 24px;
+      padding: 36px 0;
+      border-top: 1px solid var(--bg-rule);
+    }
+    .phase:last-child { border-bottom: 1px solid var(--bg-rule); }
+    .phase__num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      padding-top: 8px;
+    }
+    .phase__name {
+      font-family: var(--serif);
+      font-size: clamp(26px, 3vw, 34px);
+      line-height: 1.1;
+      letter-spacing: -0.016em;
+      font-weight: 400;
+      margin: 0 0 14px;
+    }
+    .phase__body {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--ink-muted);
+      max-width: 38em;
+      margin: 0;
+    }
+
+    /* Tiers */
+    .tiers .section__title { max-width: 22ch; }
+    .tiers__lede {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      max-width: 36em;
+      margin-bottom: 48px;
+    }
+    .tier-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .tier {
+      background: transparent;
+      border: 1px solid var(--bg-rule);
+      padding: 36px 32px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+    .tier__name {
+      font-family: var(--serif);
+      font-size: 26px;
+      line-height: 1.15;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .tier__descriptor {
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink-soft);
+      margin: 0 0 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--bg-rule);
+    }
+    .tier__list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 32px;
+      flex: 1;
+    }
+    .tier__list li {
+      font-size: 15.5px;
+      line-height: 1.5;
+      color: var(--ink);
+      padding: 10px 0 10px 18px;
+      position: relative;
+    }
+    .tier__list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 19px;
+      width: 8px;
+      height: 1px;
+      background: var(--accent);
+    }
+    .tier__link {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 2px;
+      align-self: flex-start;
+      transition: color 160ms ease, border-color 160ms ease;
+    }
+    .tier__link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .tier__link::after {
+      content: " \2192";
+      letter-spacing: 0.02em;
+    }
+
+    /* About */
+    .about__layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .about__portrait {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--bg-rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 36px;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .about__bio p {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+    .about__bio p:first-of-type::first-letter {
+      font-family: var(--serif);
+      font-size: 3.4em;
+      float: left;
+      line-height: 0.92;
+      padding: 6px 10px 0 0;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .about__links {
+      margin-top: 24px;
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+    .about__links a {
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 1px;
+      margin-right: 16px;
+    }
+    .about__links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* Book waitlist */
+    .book {
+      background: var(--ink);
+      color: var(--bg);
+      border-bottom: none;
+    }
+    .book .section__label { color: #C8927C; }
+    .book h2 {
+      color: var(--bg);
+      font-size: clamp(28px, 3.4vw, 38px);
+      line-height: 1.18;
+      letter-spacing: -0.018em;
+      max-width: 22ch;
+      margin-bottom: 20px;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .book__byline {
+      font-family: var(--sans);
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(248, 246, 242, 0.55);
+      margin-bottom: 32px;
+    }
+    .book__desc {
+      font-size: 18px;
+      line-height: 1.65;
+      color: rgba(248, 246, 242, 0.82);
+      max-width: 38em;
+      margin-bottom: 36px;
+    }
+    .book__form {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      max-width: 520px;
+      margin-bottom: 16px;
+    }
+    .book__input {
+      flex: 1 1 240px;
+      background: transparent;
+      border: 1px solid rgba(248, 246, 242, 0.35);
+      color: var(--bg);
+      font-family: var(--sans);
+      font-size: 15px;
+      padding: 14px 16px;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 160ms ease;
+    }
+    .book__input::placeholder { color: rgba(248, 246, 242, 0.45); }
+    .book__input:focus { border-color: var(--bg); }
+    .book__btn {
+      background: var(--bg);
+      color: var(--ink);
+      border-color: var(--bg);
+    }
+    .book__btn:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    .book__note {
+      font-family: var(--sans);
+      font-size: 14px;
+      color: rgba(248, 246, 242, 0.6);
+      margin: 0;
+    }
+
+    /* Diagnostic CTA */
+    .diagnostic {
+      text-align: left;
+      padding: 112px 0;
+    }
+    .diagnostic h2 {
+      font-size: clamp(30px, 4.2vw, 46px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      max-width: 22ch;
+    }
+    .diagnostic__body {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--ink-muted);
+      max-width: 38em;
+      margin-bottom: 36px;
+    }
+    .diagnostic__qualifier {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink-soft);
+      margin-top: 20px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 0 56px;
+      border-top: 1px solid var(--bg-rule);
+    }
+    .footer__inner {
+      max-width: var(--measure-wide);
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .footer__brand {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .footer__links {
+      display: flex;
+      gap: 24px;
+      font-family: var(--sans);
+      font-size: 14px;
+    }
+    .footer__links a { color: var(--ink-muted); }
+    .footer__links a:hover { color: var(--accent); }
+    .footer__line {
+      width: 100%;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--bg-rule);
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+    .reveal.is-visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* Responsive */
+    @media (min-width: 720px) {
+      .hero { padding: 128px 0 112px; }
+      section { padding: 104px 0; }
+      .phase { grid-template-columns: 120px 1fr; gap: 40px; padding: 44px 0; }
+      .about__layout { grid-template-columns: 140px 1fr; gap: 48px; align-items: start; }
+      .about__portrait { width: 140px; height: 140px; font-size: 44px; }
+    }
+
+    @media (min-width: 960px) {
+      .tier-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+      .tier { padding: 36px 28px 32px; }
+    }
+
+    /* Selection */
+    ::selection { background: var(--accent); color: var(--bg); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a href="#top" class="brand" aria-label="Fieldcraft home">Fieldcraft</a>
+      <a href="#diagnostic" class="topbar__cta">Book a diagnostic</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero__eyebrow">Fieldcraft</div>
+        <h1 id="hero-title">Your clinical AI is built. Adoption is the next frontier.</h1>
+        <p class="hero__sub">A customer success operating system for clinical AI and healthcare SaaS startups. From zero CS to a working operation in 90 days.</p>
+        <p class="hero__credit">100% gross retention. 85% pilot-to-paid conversion. Across hundreds of acute care and SNF deployments.</p>
+        <a href="#diagnostic" class="btn">Book a 30-Minute CS Diagnostic</a>
+      </div>
+    </section>
+
+    <section class="pattern" aria-labelledby="pattern-title">
+      <div class="container reveal">
+        <div class="section__label">What we see</div>
+        <h2 class="section__title" id="pattern-title">The product works. The adoption doesn&rsquo;t.</h2>
+        <p>The product works. Pilots run. Then usage softens after week six and renewal conversations start two months too late.</p>
+        <p>Design partners praise the demo and stall on contracts. CSMs run on instinct because there is no playbook. Each customer gets a different version of &ldquo;success.&rdquo;</p>
+        <p>The cause is almost never the product. It is that nobody owns the adoption problem inside the customer, and nobody owns the playbook inside the company.</p>
+        <p class="pattern__close">This is not a product problem. It is an operating problem. We solve operating problems.</p>
+      </div>
+    </section>
+
+    <section class="for-whom" aria-labelledby="for-whom-title">
+      <div class="container reveal">
+        <div class="section__label">Who this is for</div>
+        <h2 class="section__title" id="for-whom-title">Built for a specific moment, not a category.</h2>
+        <ol class="qual__list">
+          <li>You are at $1M&ndash;$10M ARR selling clinical software into acute care, post-acute, or both. Your post-sale function is still you, your founders, or one heroic CSM.</li>
+          <li>Your pilots are praised in the demo and stalled in procurement. Design partners are not converting to paid contracts at the rate your model assumed.</li>
+          <li>You are about to hire your first head of customer success and you do not yet have the playbook they will inherit.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="methodology" aria-labelledby="methodology-title">
+      <div class="container reveal">
+        <div class="section__label">The methodology</div>
+        <h2 class="section__title" id="methodology-title">A six-phase operating system, delivered in 90 days.</h2>
+        <p class="methodology__lede">Each phase produces a tangible output. Each output stress-tests the next phase. By the end, you own the system, not a deck about the system.</p>
+
+        <div class="phase-grid">
+          <article class="phase">
+            <div class="phase__num">Phase 01</div>
+            <div>
+              <h3 class="phase__name">Discover</h3>
+              <p class="phase__body">We interview your customers, your champions, your blockers, and your churn risks. We map what they actually use, what they say they want, and where the gap lives.</p>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="phase__num">Phase 02</div>
+            <div>
+              <h3 class="phase__name">Map</h3>
+              <p class="phase__body">We segment your base by ICP fit, deployment maturity, and expansion potential. Each segment gets a journey, success criteria, and a defined motion.</p>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="phase__num">Phase 03</div>
+            <div>
+              <h3 class="phase__name">Instrument</h3>
+              <p class="phase__body">We build a health scoring framework that predicts renewal, not one that decorates a dashboard. We configure your CRM to surface signal, not noise.</p>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="phase__num">Phase 04</div>
+            <div>
+              <h3 class="phase__name">Activate</h3>
+              <p class="phase__body">We design and document the lifecycle plays: onboarding, adoption milestones, expansion triggers, renewal motion. Each play has owners, timing, and outputs.</p>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="phase__num">Phase 05</div>
+            <div>
+              <h3 class="phase__name">Operate</h3>
+              <p class="phase__body">We run the motion alongside your team for the first cycle. Real customers, real renewals, real expansion conversations. The playbook gets stress-tested in production.</p>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="phase__num">Phase 06</div>
+            <div>
+              <h3 class="phase__name">Compound</h3>
+              <p class="phase__body">We hand off a documented operating system, a trained team, and a set of metrics tied to NRR. Six months later, the system is still running without us.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="tiers" aria-labelledby="tiers-title">
+      <div class="container container--wide reveal">
+        <div class="section__label">Engagements</div>
+        <h2 class="section__title" id="tiers-title">Three ways to work with us.</h2>
+        <p class="tiers__lede">Choose the depth that matches where your team is now. Every engagement is anchored to NRR and a documented handoff.</p>
+
+        <div class="tier-grid">
+          <article class="tier">
+            <h3 class="tier__name">Foundation</h3>
+            <p class="tier__descriptor">The methodology and the playbook, in 90 days.</p>
+            <ul class="tier__list">
+              <li>Customer interviews and segmentation</li>
+              <li>ICP and success criteria</li>
+              <li>Health scoring framework</li>
+              <li>Lifecycle plays and journey maps</li>
+              <li>CRM configuration and dashboards</li>
+              <li>Documented playbook handoff</li>
+            </ul>
+            <a href="#diagnostic" class="tier__link">Discuss this engagement</a>
+          </article>
+
+          <article class="tier">
+            <h3 class="tier__name">Foundation + Team</h3>
+            <p class="tier__descriptor">Foundation, plus the people in seats.</p>
+            <ul class="tier__list">
+              <li>Everything in Foundation</li>
+              <li>Sourcing and screening of CS leadership and IC hires</li>
+              <li>Network access to vetted clinical AI CS talent</li>
+              <li>Final interview support and reference-checking</li>
+              <li>Compensation benchmarking specific to your stage and vertical</li>
+            </ul>
+            <a href="#diagnostic" class="tier__link">Discuss this engagement</a>
+          </article>
+
+          <article class="tier">
+            <h3 class="tier__name">Foundation + Team + Activation</h3>
+            <p class="tier__descriptor">Everything above, plus structured operationalization.</p>
+            <ul class="tier__list">
+              <li>Everything in Foundation + Team</li>
+              <li>30-60-90 day onboarding for new CS hires</li>
+              <li>Embedded methodology training</li>
+              <li>First-90-days customer execution support</li>
+              <li>QBR setup and first-cycle facilitation</li>
+            </ul>
+            <a href="#diagnostic" class="tier__link">Discuss this engagement</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" aria-labelledby="about-title">
+      <div class="container reveal">
+        <div class="section__label">About Greg</div>
+        <h2 class="section__title" id="about-title">Operator first. Always was.</h2>
+        <div class="about__layout">
+          <div class="about__portrait" aria-label="Headshot placeholder for Greg">GL</div>
+          <div class="about__bio">
+            <p>I spent the first part of my career as a Green Beret medic, working in environments where adoption of a new tool was not a renewal conversation. It was the difference between a teammate going home or not.</p>
+            <p>Across hundreds of acute care and skilled nursing facility deployments, the work I have led has run 100% gross retention and 85% pilot-to-paid conversion. This page describes the operating system behind those numbers.</p>
+            <p>I now lead commercial work at Kaiko, an agentic clinical workspace company embedded with European cancer centers. I write about healthcare AI governance and clinical AI customer success on LinkedIn, and I am writing the book this methodology is based on.</p>
+            <p>Fieldcraft exists because the clinical AI category is full of brilliant teams who built something the field actually needs, and who are losing customers anyway. The product is not the problem. The operating system around the product is.</p>
+            <p class="about__links">
+              <a href="#" rel="me noopener">LinkedIn</a>
+              <a href="#waitlist">The book</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="book" id="waitlist" aria-labelledby="book-title">
+      <div class="container reveal">
+        <div class="section__label">Forthcoming book</div>
+        <p class="book__byline">By Greg [Last Name]</p>
+        <h2 id="book-title">Adoption Is The Product: A Customer Success Operating System for Clinical AI</h2>
+        <p class="book__desc">A book about the adoption gap in clinical AI. Why generic CS playbooks fail in regulated, multi-stakeholder environments. The operating system that closes the gap. And the metrics that prove it worked.</p>
+        <form class="book__form" action="#" method="post" aria-label="Book waitlist signup">
+          <label for="waitlist-email" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Email address</label>
+          <input class="book__input" id="waitlist-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required>
+          <button class="btn book__btn" type="submit">Join the waitlist</button>
+        </form>
+        <p class="book__note">Coming Q[X] [Year]. Join the waitlist for early chapters and the launch list.</p>
+      </div>
+    </section>
+
+    <section class="diagnostic" id="diagnostic" aria-labelledby="diagnostic-title">
+      <div class="container reveal">
+        <div class="section__label">Diagnostic call</div>
+        <h2 id="diagnostic-title">Book a 30-Minute Clinical AI CS Diagnostic.</h2>
+        <p class="diagnostic__body">We will spend 30 minutes on your customer success function. You will leave with: a written assessment of where it stands today, the three highest-leverage interventions for your stage, and clarity on whether you need outside help. No pitch unless you ask for one.</p>
+        <a href="#" class="btn">Book the diagnostic</a>
+        <p class="diagnostic__qualifier">Best fit for clinical AI and healthcare SaaS companies at $1M&ndash;$10M ARR.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer__inner">
+      <a href="#top" class="footer__brand">Fieldcraft</a>
+      <div class="footer__links">
+        <a href="#" rel="me noopener">LinkedIn</a>
+        <a href="mailto:hello@fieldcraft.co">Email</a>
+      </div>
+      <p class="footer__line">Built by an operator. For operators.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+</html>
