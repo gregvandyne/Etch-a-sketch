@@ -48,7 +48,7 @@ export const venueType = defineType({
       name: "description",
       title: "About this venue",
       description:
-        "What it's like to photograph here — light, views, favorite corners. Written in your voice for couples considering the venue.",
+        "What it's like to photograph here: light, views, favorite corners. Written in your voice for couples considering the venue.",
       type: "blockContent",
       group: "details",
     }),

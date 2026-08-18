@@ -74,8 +74,16 @@ content is never mixed in — missing content renders as designed empty states.
 | `/tag/*`, `/wp-content/*`, `/wp-admin/*` | hard redirects in `next.config.ts` |
 
 Legacy blog posts keep their rankings by being recreated with their original
-slugs (inventory in `docs/CONTENT-AUDIT.md`). Anything else gets a permanent
-redirect via the Redirects section in the Studio — no deploy needed.
+slugs (inventory in `docs/CONTENT-AUDIT.md`). As a safety net,
+`src/lib/legacy-posts.json` lists every known legacy post URL: until a post
+with that slug is published, the old URL issues a temporary (307) redirect
+to its most relevant section instead of a 404, and `npm run seed:legacy`
+generates `docs/seed/legacy-posts.ndjson` — one pre-filled CMS draft per
+legacy post (title, original slug, category), so restoring a post is
+"add photos, write story, publish." Anything else gets a permanent redirect
+via the Redirects section in the Studio — no deploy needed. The blog index
+paginates at 12 posts per page (`/blog`, `/blog/page/2`, …), and legacy
+WordPress search URLs (`/?s=…`) redirect to `/blog`.
 
 ## Image pipeline
 
@@ -96,10 +104,12 @@ and cached indefinitely; the Sanity webhook posts to `/api/revalidate`
 (HMAC-verified with `SANITY_REVALIDATE_SECRET`), which calls
 `revalidateTag`. Publish-to-live is seconds, with zero rebuilds.
 
-Draft preview: `/api/draft-mode/enable?secret=<SANITY_PREVIEW_SECRET>&slug=/x`
-switches the visitor into draft mode; `sanityFetch` then queries the
-`drafts` perspective with `SANITY_API_READ_TOKEN`, uncached. Disable via
-`/api/draft-mode/disable`.
+Draft preview: the Studio's **Preview** tab (Sanity Presentation tool)
+iframes the site and enables Next.js draft mode through
+`/api/draft-mode/enable` (`defineEnableDraftMode` from `next-sanity`,
+validated server-side with `SANITY_API_READ_TOKEN` — no shared URL secret).
+In draft mode `sanityFetch` queries the `drafts` perspective uncached, the
+site shows a "Previewing drafts" pill, and `/api/draft-mode/disable` exits.
 
 ## Inquiry pipeline
 
@@ -122,7 +132,9 @@ them.
 ## SEO
 
 - Unique titles/descriptions per page (`buildMetadata` in `src/lib/seo.ts`),
-  canonical URLs, OpenGraph/Twitter cards with 1200×630 CDN-cropped images
+  canonical URLs, OpenGraph/Twitter cards with 1200×630 CDN-cropped images;
+  pages without a photograph fall back to a branded sharing card rendered
+  at `/og` (`next/og`)
 - CMS `seo` object overrides on every content type; `noIndex` supported
 - JSON-LD: ProfessionalService + Person sitewide, BlogPosting on posts,
   BreadcrumbList on galleries/venues/posts — generated from structured
@@ -138,7 +150,15 @@ cp .env.example .env.local   # fill in what you have; empty = sample-content mod
 npm run dev                   # site on :3000, Studio on :3000/studio
 npm run build && npm start    # production build
 npm run lint
+npm run qa                    # browser QA sweep against a running server
+                              # (requires: npm install -D playwright)
 ```
+
+`npm run qa` loads every route at mobile and desktop widths and checks
+status codes, overflow, broken images/links, alt text, metadata, JSON-LD,
+sitemap/robots/redirects, the inquiry form's success and validation states,
+and keyboard focus. Screenshots land in `qa-shots/` (gitignored). Point it
+at another environment with `QA_BASE_URL=…`.
 
 ## Deployment (Vercel or any Node host)
 
@@ -150,6 +170,7 @@ npm run lint
    revalidate webhook (see `src/app/api/revalidate/route.ts` header comment);
    create a Viewer token for `SANITY_API_READ_TOKEN`.
 5. Seed initial content: `npx sanity dataset import docs/seed/seed.ndjson production`
+   and `npx sanity dataset import docs/seed/legacy-posts.ndjson production`
    (see `docs/seed/README.md`), then upload photographs in the Studio.
 6. Point the courtneystockton.com DNS at the deployment.
 

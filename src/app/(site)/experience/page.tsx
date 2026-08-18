@@ -8,7 +8,7 @@ export async function generateMetadata() {
   return buildMetadata({
     title: "The Experience",
     description:
-      "What working with Courtney Stockton feels like — calm guidance, thoughtful preparation, and photography that lets your day unfold naturally.",
+      "What working with Courtney Stockton feels like: calm guidance, thoughtful preparation, and photography that lets your day unfold naturally.",
     path: "/experience",
     image: page.heroImage,
     seo: page.seo,
@@ -74,7 +74,7 @@ export default async function ExperiencePage() {
       <InquireBand
         location="experience"
         heading="Ready when you are"
-        text="Share your date and your plans — Courtney will reply personally with everything you need to know."
+        text="Share your date and your plans, and Courtney will reply personally with everything you need to know."
       />
     </>
   );

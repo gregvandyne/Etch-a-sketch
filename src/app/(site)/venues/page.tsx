@@ -8,7 +8,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Wedding Venues",
   description:
-    "Sonoma and Napa wedding venues photographed by Courtney Stockton — vineyard estates, wineries and wine country gathering places, with real weddings from each.",
+    "Sonoma and Napa wedding venues photographed by Courtney Stockton: vineyard estates, wineries and wine country gathering places, with real weddings from each.",
   path: "/venues",
 });
 
@@ -22,7 +22,7 @@ export default async function VenuesPage() {
           <Label className="mb-5">Wine country</Label>
           <Heading as="h1">Venues</Heading>
           <p className="mt-6 leading-relaxed text-umber">
-            Vineyard estates, wineries and gathering places Courtney has photographed —
+            Vineyard estates, wineries and gathering places Courtney has photographed,
             each with real weddings to explore. Planning at one of these? She already
             knows the light.
           </p>

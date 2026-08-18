@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "qa": "node scripts/qa.mjs",
+    "seed:legacy": "node scripts/generate-legacy-seed.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",

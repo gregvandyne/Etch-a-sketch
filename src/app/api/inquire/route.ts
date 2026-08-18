@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   if (rateLimited(ip)) {
     return NextResponse.json(
-      { error: "Too many inquiries from this connection — please try again in a little while." },
+      { error: "Too many inquiries from this connection. Please try again in a little while." },
       { status: 429 }
     );
   }
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
       from,
       to: [to],
       reply_to: email,
-      subject: `New ${TYPE_LABELS[clean(body.type)]?.toLowerCase() ?? "photography"} inquiry — ${name}`,
+      subject: `New ${TYPE_LABELS[clean(body.type)]?.toLowerCase() ?? "photography"} inquiry from ${name}`,
       text,
     }),
   });

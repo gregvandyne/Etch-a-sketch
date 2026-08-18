@@ -35,7 +35,7 @@ export const siteSettingsType = defineType({
     defineField({
       name: "serviceAreas",
       title: "Service areas",
-      description: "e.g. Sonoma, Napa, Northern California — shown in the footer.",
+      description: "e.g. Sonoma, Napa, Northern California. Shown in the footer.",
       type: "array",
       of: [{ type: "string" }],
       group: "business",

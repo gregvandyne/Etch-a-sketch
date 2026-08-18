@@ -93,7 +93,7 @@ export function Button({
 /** The closing conversion band used across content pages. */
 export function InquireBand({
   heading = "Let's tell your story",
-  text = "Inquiries are always welcome — share your date and your plans, and Courtney will reply personally.",
+  text = "Inquiries are always welcome. Share your date and your plans, and Courtney will reply personally.",
   location,
 }: {
   heading?: string;

@@ -1,3 +1,6 @@
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
+
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RevealProvider } from "@/components/Reveal";
@@ -48,6 +51,19 @@ export default async function SiteLayout({
       <main id="main">{children}</main>
       <Footer />
       <RevealProvider />
+      {(await draftMode()).isEnabled ? (
+        <>
+          {/* Plain anchor on purpose: the route must run server-side to clear the draft cookie. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
+            href="/api/draft-mode/disable"
+            className="label fixed bottom-4 right-4 z-[90] bg-wine px-4 py-3 text-ivory shadow-lg"
+          >
+            Previewing drafts · Exit
+          </a>
+          <VisualEditing />
+        </>
+      ) : null}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

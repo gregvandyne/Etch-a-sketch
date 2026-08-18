@@ -27,7 +27,7 @@ export default async function GalleriesPage() {
           <Label className="mb-5">The portfolio</Label>
           <Heading as="h1">Galleries</Heading>
           <p className="mt-6 leading-relaxed text-umber">
-            Weddings, engagements and families — photographed honestly, in beautiful light,
+            Weddings, engagements and families, photographed honestly and in beautiful light
             throughout Sonoma, Napa and beyond.
           </p>
         </div>

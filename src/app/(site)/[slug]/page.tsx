@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 
 import { ContentViewTracker } from "@/components/ContentViewTracker";
 import { GalleryCard } from "@/components/GalleryCard";
@@ -9,6 +9,7 @@ import { formatDate } from "@/components/PostCard";
 import { Prose } from "@/components/Prose";
 import { Button, Heading, InquireBand, Label, TextLink } from "@/components/ui";
 import { getPost, getPostSlugs, getRedirectForPath } from "@/lib/content";
+import { getLegacyPost } from "@/lib/legacy-posts";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 import { getServiceArea, SERVICE_AREAS } from "@/lib/service-areas";
 import { CATEGORY_META, SITE_URL, absoluteUrl } from "@/lib/site";
@@ -73,6 +74,12 @@ export default async function RootSlugPage({ params }: Props) {
 
   const redirectDoc = await getRedirectForPath(`/${slug}`);
   if (redirectDoc?.to) permanentRedirect(redirectDoc.to);
+
+  // Known post from the previous website that hasn't been recreated yet:
+  // temporary redirect (not 404, not permanent) so links and rankings hold
+  // until the post is published in the CMS with its original address.
+  const legacy = getLegacyPost(slug);
+  if (legacy) redirect(legacy.target);
 
   notFound();
 }

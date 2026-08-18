@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { track } from "@/lib/analytics";
 
@@ -57,13 +57,24 @@ function NavLink({
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
-  // Lock page scroll while the mobile menu is open. (Menu links close it
-  // on click, so no navigation effect is needed.)
+  // Lock page scroll while the mobile menu is open, and let Escape close
+  // it with focus returned to the toggle. (Menu links close it on click,
+  // so no navigation effect is needed.)
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
     return () => {
       document.documentElement.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
@@ -78,6 +89,7 @@ export function Header() {
         {/* Mobile: menu button */}
         <button
           type="button"
+          ref={toggleRef}
           className="label -ml-1 flex h-11 w-11 items-center justify-center lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"

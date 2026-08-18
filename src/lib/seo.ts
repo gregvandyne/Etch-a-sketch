@@ -26,7 +26,8 @@ export function buildMetadata({
 }): Metadata {
   const finalTitle = seo?.title ?? title;
   const finalDescription = seo?.description ?? description;
-  const shareImage = photoUrl(seo?.image ?? image);
+  // Pages without a photograph fall back to the branded sharing card (/og).
+  const shareImage = photoUrl(seo?.image ?? image) ?? absoluteUrl("/og");
   const canonical = absoluteUrl(path);
 
   return {
@@ -38,13 +39,13 @@ export function buildMetadata({
       description: finalDescription,
       url: canonical,
       type,
-      ...(shareImage ? { images: [{ url: shareImage, width: 1200, height: 630 }] } : {}),
+      images: [{ url: shareImage, width: 1200, height: 630 }],
     },
     twitter: {
-      card: shareImage ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: finalTitle,
       description: finalDescription,
-      ...(shareImage ? { images: [shareImage] } : {}),
+      images: [shareImage],
     },
     ...(seo?.noIndex ? { robots: { index: false, follow: false } } : {}),
   };

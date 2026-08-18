@@ -42,7 +42,7 @@ function Field({
     <div>
       <label className={labelClass} htmlFor={htmlFor}>
         {label}
-        {optional ? <span className="normal-case tracking-normal text-taupe"> — optional</span> : null}
+        {optional ? <span className="normal-case tracking-normal text-taupe"> (optional)</span> : null}
       </label>
       {children}
       {error ? (
@@ -131,7 +131,7 @@ export function InquiryForm({ successMessage }: { successMessage?: string }) {
         <p className="font-display text-3xl text-ink">Thank you</p>
         <p className="mx-auto mt-4 max-w-md text-umber">
           {successMessage ??
-            "Your note is on its way. Courtney will be in touch soon — usually within two business days."}
+            "Your note is on its way. Courtney will be in touch soon, usually within two business days."}
         </p>
       </div>
     );
@@ -232,7 +232,7 @@ export function InquiryForm({ successMessage }: { successMessage?: string }) {
               id="inquiry-venue"
               name="venue"
               type="text"
-              placeholder="Booked or dreaming — either is lovely"
+              placeholder="Booked or dreaming, either is lovely"
               className={inputClass}
             />
           </Field>
@@ -282,7 +282,7 @@ export function InquiryForm({ successMessage }: { successMessage?: string }) {
 
       {serverError ? (
         <p role="alert" className="border border-wine/40 bg-wine/5 px-4 py-3 text-sm text-wine">
-          {serverError} If it keeps happening, email Courtney directly instead — the address is
+          {serverError} If it keeps happening, email Courtney directly instead; the address is
           in the footer below.
         </p>
       ) : null}

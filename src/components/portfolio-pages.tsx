@@ -29,11 +29,11 @@ export async function CategoryPage({ category }: { category: CategoryKey }) {
 
   const intro: Record<CategoryKey, string> = {
     wedding:
-      "Wedding days told honestly — refined portraits, remembered details, and the unrepeatable moments in between, from vineyard estates to intimate backyard celebrations.",
+      "Wedding days told honestly: refined portraits, remembered details, and the unrepeatable moments in between, from vineyard estates to intimate backyard celebrations.",
     engagement:
-      "Relaxed, romantic sessions in the places that mean something to you — golden vineyard rows, foggy coastlines, and the towns where your story began.",
+      "Relaxed, romantic sessions in the places that mean something to you: golden vineyard rows, foggy coastlines, and the towns where your story began.",
     family:
-      "Warm, unhurried photographs of your people — at home, in the meadow, or among the vines. Little ones welcome exactly as they are.",
+      "Warm, unhurried photographs of your people, at home, in the meadow, or among the vines. Little ones welcome exactly as they are.",
   };
 
   return (
@@ -96,7 +96,7 @@ export async function galleryMetadata(
     title: `${gallery.title}${parts.length ? ` | ${parts[0]}` : ""}`,
     description:
       gallery.introduction ??
-      `${gallery.title} — ${meta.plural.toLowerCase()} photography by Courtney Stockton${parts.length ? ` at ${parts.join(", ")}` : ""}.`,
+      `${gallery.title}: ${meta.plural.toLowerCase()} photography by Courtney Stockton${parts.length ? ` at ${parts.join(", ")}` : ""}.`,
     path: `${meta.path}/${slug}`,
     image: gallery.coverImage,
     seo: gallery.seo,
@@ -221,7 +221,7 @@ export async function GalleryPage({
       <InquireBand
         location={`gallery-${category}`}
         heading="Love what you see?"
-        text="Courtney books a limited number of weddings and sessions each year. Share your date — she'd love to hear your plans."
+        text="Courtney books a limited number of weddings and sessions each year. Share your date; she'd love to hear your plans."
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
     </>

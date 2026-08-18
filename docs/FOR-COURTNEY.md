@@ -75,10 +75,13 @@ their own sections.
    page lists the post. No copying anything twice.
 5. **Publish** (or leave it unpublished as a draft until you're ready).
 
-**Moving over an old post from the previous site:** create the post and, in
-the Web address field, type the old address's last part exactly (e.g.
-`lisa-zach-viansa-winery-wedding-sonoma-ca`). The old link — and its Google
-ranking — then carries straight over.
+**Moving over an old post from the previous site:** every post from your
+old website is already waiting in **Blog → Posts** as a draft, with its
+title, original web address and category filled in. Open one, add the
+photographs and the story, set the publish date, and press Publish. The old
+link and its Google ranking carry straight over. (Until a post is
+published, its old address quietly sends visitors to the matching portfolio
+section, so nothing ever hits a dead end.)
 
 ## Venues
 
@@ -104,10 +107,13 @@ offering's "Starting investment" field. Leave it empty and no price appears.
 
 ## Drafts and previewing
 
-Nothing is public until you press **Publish** — you can save half-finished
-work freely, and it stays a draft. Publishing takes effect on the live site
-within a few seconds. To unpublish something, open it and choose Unpublish
-from the menu next to the Publish button; the page comes down right away.
+Nothing is public until you press **Publish**. You can save half-finished
+work freely, and it stays a draft. To see exactly how a draft will look,
+open the **Preview** tab at the top of the dashboard: it shows the real
+website with your unpublished changes visible, side by side with the
+editor. Publishing takes effect on the live site within a few seconds. To
+unpublish something, open it and choose Unpublish from the menu next to the
+Publish button; the page comes down right away.
 
 ## Search settings (SEO)
 

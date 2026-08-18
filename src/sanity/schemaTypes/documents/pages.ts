@@ -41,7 +41,7 @@ export const homePageType = defineType({
     defineField({
       name: "heroImage",
       title: "Opening photograph",
-      description: "The large photograph at the top of the homepage. Choose a favorite — this is the first thing every visitor sees.",
+      description: "The large photograph at the top of the homepage. Choose a favorite; this is the first thing every visitor sees.",
       type: "photograph",
       group: "hero",
     }),
@@ -61,7 +61,7 @@ export const homePageType = defineType({
     defineField({
       name: "introText",
       title: "Introduction",
-      description: "A short, warm introduction to you and your work — two to four sentences.",
+      description: "A short, warm introduction to you and your work. Two to four sentences is plenty.",
       type: "text",
       rows: 5,
       group: "intro",
@@ -82,7 +82,7 @@ export const homePageType = defineType({
     defineField({
       name: "philosophyText",
       title: "Philosophy",
-      description: "How you photograph — the feeling of your work.",
+      description: "How you photograph, and the feeling of your work.",
       type: "text",
       rows: 5,
       group: "philosophy",
@@ -232,7 +232,7 @@ export const investmentPageType = defineType({
     defineField({
       name: "offerings",
       title: "Offerings",
-      description: "One entry per service — weddings, elopements, engagements, families…",
+      description: "One entry per service: weddings, elopements, engagements, families…",
       type: "array",
       group: "content",
       of: [
@@ -258,7 +258,7 @@ export const investmentPageType = defineType({
     defineField({
       name: "detailsText",
       title: "The details",
-      description: "Anything couples should know — travel, albums, timelines, what's included.",
+      description: "Anything couples should know: travel, albums, timelines, what's included.",
       type: "blockContent",
       group: "content",
     }),

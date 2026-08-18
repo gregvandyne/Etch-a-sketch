@@ -6,6 +6,7 @@
  */
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
+import { presentationTool } from "sanity/presentation";
 import { visionTool } from "@sanity/vision";
 
 import { apiVersion, dataset, projectId } from "@/sanity/env";
@@ -49,6 +50,13 @@ export default defineConfig({
   },
   plugins: [
     structureTool({ structure }),
+    // "Preview" tab: browse the site with unpublished drafts visible.
+    presentationTool({
+      title: "Preview",
+      previewUrl: {
+        previewMode: { enable: "/api/draft-mode/enable" },
+      },
+    }),
     // GROQ playground — useful for developers, harmless for editors.
     visionTool({ defaultApiVersion: apiVersion }),
   ],

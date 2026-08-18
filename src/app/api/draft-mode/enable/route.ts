@@ -1,20 +1,12 @@
-import { draftMode } from "next/headers";
-import { redirect } from "next/navigation";
-import { NextRequest } from "next/server";
+import { defineEnableDraftMode } from "next-sanity/draft-mode";
+
+import { client } from "@/sanity/lib/client";
 
 /**
- * Enables draft preview. Requires the shared preview secret so drafts
- * can't be viewed by guessing the URL:
- *   /api/draft-mode/enable?secret=<SANITY_PREVIEW_SECRET>&slug=/some-page
+ * Enables draft preview. Called by the Studio's Presentation tool with a
+ * signed preview-URL secret (validated against the Sanity project using the
+ * server-side viewer token), so drafts can never be viewed by guessing a URL.
  */
-export async function GET(request: NextRequest) {
-  const secret = request.nextUrl.searchParams.get("secret");
-  const slug = request.nextUrl.searchParams.get("slug") ?? "/";
-
-  if (!process.env.SANITY_PREVIEW_SECRET || secret !== process.env.SANITY_PREVIEW_SECRET) {
-    return new Response("Invalid preview secret", { status: 401 });
-  }
-
-  (await draftMode()).enable();
-  redirect(slug.startsWith("/") ? slug : `/${slug}`);
-}
+export const { GET } = defineEnableDraftMode({
+  client: client.withConfig({ token: process.env.SANITY_API_READ_TOKEN }),
+});

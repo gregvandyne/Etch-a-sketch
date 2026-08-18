@@ -15,21 +15,21 @@ export const CATEGORY_META = {
     path: "/weddings",
     title: "Sonoma & Napa Wedding Photography",
     description:
-      "Wedding photography in Sonoma, Napa and Northern California wine country — timeless, editorial storytelling of real wedding days by Courtney Stockton.",
+      "Wedding photography in Sonoma, Napa and Northern California wine country: timeless, editorial storytelling of real wedding days by Courtney Stockton.",
   },
   engagement: {
     plural: "Engagements",
     path: "/engagements",
     title: "Engagement Photography in Sonoma & Napa",
     description:
-      "Engagement sessions in Sonoma, Napa and Northern California — relaxed, romantic photographs in wine country light by Courtney Stockton.",
+      "Engagement sessions in Sonoma, Napa and Northern California: relaxed, romantic photographs in wine country light by Courtney Stockton.",
   },
   family: {
     plural: "Families",
     path: "/families",
     title: "Sonoma County Family Photography",
     description:
-      "Family and little-ones photography in Sonoma County and Northern California — honest, warm photographs of your people by Courtney Stockton.",
+      "Family and little-ones photography in Sonoma County and Northern California: honest, warm photographs of your people by Courtney Stockton.",
   },
 } as const;
 

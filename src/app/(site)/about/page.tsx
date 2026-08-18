@@ -9,7 +9,7 @@ export async function generateMetadata() {
   return buildMetadata({
     title: "About Courtney",
     description:
-      "Meet Courtney Stockton — wedding and portrait photographer, wife to a Sonoma winemaker, photographing love in Sonoma, Napa and wine country since 2012.",
+      "Meet Courtney Stockton: wedding and portrait photographer, wife to a Sonoma winemaker, photographing love in Sonoma, Napa and wine country since 2012.",
     path: "/about",
     image: about.portrait,
     seo: about.seo,

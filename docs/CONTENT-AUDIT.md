@@ -90,11 +90,15 @@ Portraits/family/seniors/lifestyle: `/jordan-and-scott/`, `/eileen/`,
 `/sara-lake-berryessa-napa-portrait-photographer-2/`
 
 Because the build environment could not crawl the live site, **post bodies,
-photographs, and publish dates could not be migrated automatically**. The slugs
-above are pre-seeded so that when each post is recreated in the CMS with its
-original slug, its URL — and search ranking — carries straight over. Until then,
-unknown legacy URLs fall through to the CMS-managed redirect list. See
-`docs/FOR-COURTNEY.md` for the migration workflow.
+photographs, and publish dates could not be migrated automatically**. Two
+safety nets cover the gap:
+
+1. Every slug above lives in `src/lib/legacy-posts.json`; until a post with
+   that slug is published, its URL issues a temporary (307) redirect to the
+   most relevant section instead of a 404, so links and rankings hold.
+2. `docs/seed/legacy-posts.ndjson` pre-creates each post as a CMS draft with
+   its original slug, title and category; publishing one restores the URL
+   in place. See `docs/FOR-COURTNEY.md` for the workflow.
 
 ## Verified business facts
 

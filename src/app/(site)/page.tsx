@@ -95,7 +95,7 @@ export default async function HomePage() {
             </div>
             <div className="reveal lg:col-span-7 lg:col-start-6">
               <Label className="mb-5">The photographer</Label>
-              <Heading>{home.introHeading ?? "Hello — I'm Courtney"}</Heading>
+              <Heading>{home.introHeading ?? "Hello, I'm Courtney"}</Heading>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-charcoal/85">
                 {home.introText}
               </p>
@@ -198,7 +198,7 @@ export default async function HomePage() {
             Gently guided, honestly told
           </h2>
           <p className="reveal mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-ivory/80">
-            Courtney blends gentle direction with documentary storytelling — guiding you when
+            Courtney blends gentle direction with documentary storytelling, guiding you when
             it helps and stepping back when it doesn&apos;t, so your day can unfold naturally
             while still feeling visually intentional.
           </p>
@@ -229,7 +229,7 @@ export default async function HomePage() {
             <Link href="/napa-wedding-photography" className="border-b border-taupe hover:border-charcoal">
               Napa Valley
             </Link>
-            — from Healdsburg and Glen Ellen to St.&nbsp;Helena and Calistoga — as well as{" "}
+            and the towns between, from Healdsburg and Glen Ellen to St.&nbsp;Helena and Calistoga, as well as{" "}
             <Link href="/sonoma-elopement-photography" className="border-b border-taupe hover:border-charcoal">
               elopements
             </Link>{" "}
@@ -237,7 +237,7 @@ export default async function HomePage() {
             <Link href="/seattle-wedding-photography" className="border-b border-taupe hover:border-charcoal">
               Seattle
             </Link>{" "}
-            — her favorite place — never carries a travel fee.
+            , her favorite place, never carries a travel fee.
           </p>
         </div>
       </section>

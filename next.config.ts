@@ -6,6 +6,13 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      // Legacy WordPress search results (/?s=term) → the journal.
+      {
+        source: "/",
+        has: [{ type: "query", key: "s" }],
+        destination: "/blog",
+        permanent: true,
+      },
       // Legacy WordPress tag archive → the wedding portfolio.
       {
         source: "/tag/sonoma-county-wedding-photographer",

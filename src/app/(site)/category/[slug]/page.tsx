@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props) {
     title: `${category.title} | Journal`,
     description:
       category.description ??
-      `${category.title} — stories from the journal of Courtney Stockton Photography.`,
+      `${category.title}: stories from the journal of Courtney Stockton Photography.`,
     path: `/category/${slug}`,
   });
 }
@@ -65,7 +65,7 @@ export default async function CategoryArchivePage({ params }: Props) {
         </div>
       ) : (
         <p className="text-center italic text-taupe">
-          No stories in this category yet — <Link href="/blog" className="underline">browse the full journal</Link>.
+          No stories in this category yet. <Link href="/blog" className="underline">Browse the full journal</Link>.
         </p>
       )}
     </div>

@@ -20,7 +20,7 @@ export default function SiteError({
       <p className="label mb-5">Something went wrong</p>
       <h1 className="font-display text-4xl text-ink sm:text-5xl">A brief hiccup</h1>
       <p className="mx-auto mt-6 max-w-md leading-relaxed text-umber">
-        This page couldn&apos;t load just now. It&apos;s usually momentary — try again,
+        This page couldn&apos;t load just now. It&apos;s usually momentary. Try again,
         or head back to the portfolio.
       </p>
       <div className="mt-10 flex flex-wrap items-center justify-center gap-6">

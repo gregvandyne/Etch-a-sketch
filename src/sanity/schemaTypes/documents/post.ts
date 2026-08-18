@@ -75,7 +75,7 @@ export const postType = defineType({
       name: "relatedGallery",
       title: "Related portfolio gallery",
       description:
-        "If this post is about a wedding or session already in your portfolio, link it here — the post will show a “View the full gallery” invitation automatically.",
+        "If this post is about a wedding or session already in your portfolio, link it here and the post will show a “View the full gallery” invitation automatically.",
       type: "reference",
       to: [{ type: "gallery" }],
       group: "connections",

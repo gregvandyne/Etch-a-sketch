@@ -27,7 +27,7 @@ export const galleryType = defineType({
     defineField({
       name: "title",
       title: "Title",
-      description: "e.g. “Emily & James — Viansa Sonoma Wedding”",
+      description: "e.g. “Emily & James, Viansa Sonoma Wedding”",
       type: "string",
       group: "details",
       validation: (rule) => rule.required().error("Every gallery needs a title."),
@@ -99,7 +99,7 @@ export const galleryType = defineType({
       name: "photographs",
       title: "Photographs",
       description:
-        "Drag and drop to upload in bulk, then drag to reorder — the order here is exactly the order on the website.",
+        "Drag and drop to upload in bulk, then drag to reorder. The order here is exactly the order on the website.",
       type: "array",
       group: "photographs",
       of: [{ type: "photograph" }],

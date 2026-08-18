@@ -11,7 +11,7 @@ export async function generateMetadata() {
   return buildMetadata({
     title: "Information & Investment",
     description:
-      "Wedding, elopement, engagement and family photography with Courtney Stockton — what's offered, how booking works, and how to begin.",
+      "Wedding, elopement, engagement and family photography with Courtney Stockton: what's offered, how booking works, and how to begin.",
     path: "/information",
     image: page.heroImage,
     seo: page.seo,
@@ -92,7 +92,7 @@ export default async function InformationPage() {
       <InquireBand
         location="investment"
         heading="Begin the conversation"
-        text="Every wedding and session is quoted personally. Share your plans and Courtney will send everything you need — availability, collections and next steps."
+        text="Every wedding and session is quoted personally. Share your plans and Courtney will send everything you need: availability, collections and next steps."
       />
     </>
   );

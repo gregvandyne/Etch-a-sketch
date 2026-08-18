@@ -10,7 +10,7 @@ export async function generateMetadata() {
   return buildMetadata({
     title: "Inquire",
     description:
-      "Inquire about wedding, engagement or family photography with Courtney Stockton — Sonoma, Napa, Northern California and beyond.",
+      "Inquire about wedding, engagement or family photography with Courtney Stockton in Sonoma, Napa, Northern California and beyond.",
     path: "/contact",
     image: page.image,
     seo: page.seo,

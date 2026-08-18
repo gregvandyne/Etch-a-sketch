@@ -102,10 +102,30 @@ function Lightbox({
   );
 
   useEffect(() => {
+    // Remember what opened the lightbox so focus can return to it on close.
+    const opener = document.activeElement as HTMLElement | null;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+      if (e.key === "Tab") {
+        // Keep keyboard focus inside the dialog.
+        const focusables = containerRef.current?.querySelectorAll<HTMLElement>(
+          "button, [tabindex='-1']"
+        );
+        if (!focusables || focusables.length === 0) return;
+        const list = Array.from(focusables).filter((el) => el.offsetParent !== null || el === containerRef.current);
+        const first = list[0];
+        const last = list[list.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey && (active === first || active === containerRef.current)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        } else if (!containerRef.current?.contains(active)) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     document.addEventListener("keydown", onKey);
     document.documentElement.style.overflow = "hidden";
@@ -113,7 +133,20 @@ function Lightbox({
     return () => {
       document.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = "";
+      opener?.focus();
     };
+    // The trap is installed once per lightbox open, not per photograph.
+  }, []);
+
+  useEffect(() => {
+    const onNav = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "Escape") onClose();
+    };
+    // Navigation keys must always reflect the current index.
+    document.addEventListener("keydown", onNav);
+    return () => document.removeEventListener("keydown", onNav);
   }, [prev, next, onClose]);
 
   const photo = photographs[index];

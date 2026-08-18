@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props) {
   if (!venue) return {};
   return buildMetadata({
     title: `${venue.name} Wedding Photographer`,
-    description: `Weddings photographed at ${venue.name}${venue.location ? ` in ${venue.location}` : ""} by Courtney Stockton — real galleries, stories and inquiry details.`,
+    description: `Weddings photographed at ${venue.name}${venue.location ? ` in ${venue.location}` : ""} by Courtney Stockton, with real galleries, stories and inquiry details.`,
     path: `/venues/${slug}`,
     image: venue.heroImage,
     seo: venue.seo,
@@ -126,7 +126,7 @@ export default async function VenuePage({ params }: Props) {
       <InquireBand
         location="venue"
         heading={`Getting married at ${venue.name}?`}
-        text="Courtney knows this venue's light and rhythm. Share your date — she'd love to hear your plans."
+        text="Courtney knows this venue's light and rhythm. Share your date; she'd love to hear your plans."
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
     </>

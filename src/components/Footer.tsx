@@ -93,7 +93,7 @@ export async function Footer() {
 
           {usingSampleContent ? (
             <p className="text-xs italic text-taupe">
-              Preview build — sample content and labeled placeholder images are shown
+              Preview build: sample content and labeled placeholder images are shown
               until the content studio is connected.
             </p>
           ) : null}
