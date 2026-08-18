@@ -193,7 +193,7 @@ export default async function HomePage() {
       {/* ——— The experience ——— */}
       <section className="bg-charcoal text-ivory">
         <div className="mx-auto max-w-4xl px-5 py-20 text-center sm:px-8 lg:py-28">
-          <Label className="reveal mb-5 !text-sand">Working together</Label>
+          <Label className="reveal mb-5 text-sand">Working together</Label>
           <h2 className="reveal font-display text-3xl text-ivory sm:text-4xl lg:text-5xl">
             Gently guided, honestly told
           </h2>

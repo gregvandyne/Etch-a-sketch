@@ -6,7 +6,8 @@
   --color-parchment: #f3efe7;
   --color-linen: #e9e3d8;
   --color-sand: #d8cfc0;
-  --color-taupe: #a89a88;
+  /* Taupe stays warm but dark enough for 4.5:1 small-text contrast on ivory. */
+  --color-taupe: #78695a;
   --color-umber: #6e6459;
   --color-charcoal: #2b2823;
   --color-ink: #1d1b18;
@@ -38,22 +39,26 @@ body {
   color: var(--color-ink);
 }
 
-/* Editorial display type */
-.font-display {
-  font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-}
+/* Component classes live in the components layer so Tailwind utilities
+   (e.g. text-ivory on a dark button) can override their defaults. */
+@layer components {
+  /* Editorial display type */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
 
-/* Small uppercase labels — the quiet sans voice of the site */
-.label {
-  font-family: var(--font-body);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--color-umber);
+  /* Small uppercase labels — the quiet sans voice of the site */
+  .label {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-umber);
+  }
 }
 
 /* Focus visibility — consistent, elegant, never removed */
