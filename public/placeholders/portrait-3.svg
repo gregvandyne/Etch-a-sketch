@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#E5DFD6"/>
+      <stop offset="1" stop-color="#C9C4B6"/>
+    </linearGradient>
+    <radialGradient id="s" cx="0.64" cy="0.41000000000000003" r="0.9">
+      <stop offset="0" stop-color="#96917F" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#96917F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1600" fill="url(#g)"/>
+  <rect width="1200" height="1600" fill="url(#s)"/>
+  <circle cx="768" cy="656" r="600" fill="#96917F" opacity="0.18"/>
+  <rect x="72" y="96" width="1056" height="1408" fill="none" stroke="#96917F" stroke-opacity="0.4" stroke-width="2"/>
+  <text x="50%" y="50%" text-anchor="middle" fill="#6E6659" font-family="Georgia, serif" font-size="31" letter-spacing="5" opacity="0.75">PLACEHOLDER</text>
+  <text x="50%" y="848" text-anchor="middle" fill="#6E6659" font-family="Georgia, serif" font-style="italic" font-size="22" opacity="0.6">Final photograph to be supplied</text>
+</svg>
