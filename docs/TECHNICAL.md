@@ -111,6 +111,31 @@ validated server-side with `SANITY_API_READ_TOKEN` — no shared URL secret).
 In draft mode `sanityFetch` queries the `drafts` perspective uncached, the
 site shows a "Previewing drafts" pill, and `/api/draft-mode/disable` exits.
 
+## Instagram feed
+
+`src/lib/instagram.ts` + `src/components/InstagramStrip.tsx` render the
+latest Instagram photographs on the homepage, linking to the posts. The
+section renders **only** when `INSTAGRAM_USER_ID` and
+`INSTAGRAM_ACCESS_TOKEN` are set; otherwise it is absent (never faked).
+The feed is fetched server-side from the Instagram Graph API and cached
+for an hour (`revalidate: 3600`), so visitors never hit Instagram directly
+and the token never reaches the browser.
+
+Setup (owner action):
+1. The Instagram account must be a professional account linked to a
+   Facebook Page. Create a Meta app (Instagram Graph API), obtain a
+   long-lived access token and the Instagram user ID.
+2. Set both env vars in the host.
+3. **Tokens expire after ~60 days.** Refresh with
+   `GET https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=<token>`
+   before expiry and update the env var (a monthly calendar reminder or a
+   small scheduled job works). If that upkeep is unwanted, a managed feed
+   service (e.g. Behold) can replace this with a stable feed URL; the
+   fetch boundary in `src/lib/instagram.ts` is the only file to change.
+
+Note: photos flow one way (Instagram → website). Publishing a gallery on
+the website never posts to Instagram.
+
 ## Inquiry pipeline
 
 `POST /api/inquire` → server-side validation → spam checks (honeypot field,

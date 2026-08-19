@@ -32,7 +32,7 @@ const SEO = /* groq */ `seo { title, description, image ${IMG}, noIndex }`;
 
 export const settingsQuery = defineQuery(`*[_type == "siteSettings"][0]{
   businessName, tagline, email, serviceAreas, instagram, facebook, pinterest,
-  defaultSeoDescription, defaultShareImage ${IMG}
+  defaultSeoDescription
 }`);
 
 export const homePageQuery = defineQuery(`*[_type == "homePage"][0]{
@@ -155,10 +155,10 @@ export const redirectByPathQuery = defineQuery(
   `*[_type == "redirect" && from == $path][0]{ from, to }`
 );
 
-/** Everything the sitemap needs in one round trip. */
+/** Everything the sitemap needs in one round trip. Pages hidden from search stay out. */
 export const sitemapQuery = defineQuery(`{
-  "galleries": *[_type == "gallery" && defined(slug.current)]{ "slug": slug.current, category, _updatedAt },
-  "venues": *[_type == "venue" && defined(slug.current)]{ "slug": slug.current, _updatedAt },
+  "galleries": *[_type == "gallery" && defined(slug.current) && seo.noIndex != true]{ "slug": slug.current, category, _updatedAt },
+  "venues": *[_type == "venue" && defined(slug.current) && seo.noIndex != true]{ "slug": slug.current, _updatedAt },
   "posts": *[_type == "post" && defined(slug.current) && seo.noIndex != true]{ "slug": slug.current, _updatedAt },
   "categories": *[_type == "postCategory" && defined(slug.current)]{ "slug": slug.current, _updatedAt }
 }`);

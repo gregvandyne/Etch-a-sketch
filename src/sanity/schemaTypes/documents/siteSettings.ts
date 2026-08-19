@@ -60,18 +60,11 @@ export const siteSettingsType = defineType({
     }),
     defineField({
       name: "defaultSeoDescription",
-      title: "Default search description",
-      description: "Used for pages without their own search description.",
+      title: "Business description for search engines",
+      description:
+        "A sentence describing the business, used in the structured data search engines read.",
       type: "text",
       rows: 3,
-      group: "seo",
-    }),
-    defineField({
-      name: "defaultShareImage",
-      title: "Default sharing image",
-      description: "Used when a page has no photograph of its own.",
-      type: "image",
-      options: { hotspot: true },
       group: "seo",
     }),
   ],

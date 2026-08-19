@@ -5,9 +5,12 @@ import { Label } from "./ui";
 export function Testimonials({
   testimonials,
   heading = "Kind words",
+  more = 2,
 }: {
   testimonials: Testimonial[];
   heading?: string;
+  /** How many additional quotes to show beneath the featured one. */
+  more?: number;
 }) {
   if (testimonials.length === 0) return null;
   const [first, ...rest] = testimonials;
@@ -24,7 +27,7 @@ export function Testimonials({
         </figure>
         {rest.length > 0 ? (
           <div className="mt-16 grid gap-12 text-left sm:grid-cols-2 sm:gap-10">
-            {rest.slice(0, 2).map((t) => (
+            {rest.slice(0, more).map((t) => (
               <figure key={t._id} className="reveal">
                 <blockquote className="text-[0.95rem] leading-relaxed text-charcoal/85">
                   “{t.quote}”

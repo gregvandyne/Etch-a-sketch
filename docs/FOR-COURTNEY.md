@@ -123,6 +123,14 @@ automatically. If you want to fine-tune how something looks in Google or when
 texted/shared, that's where you do it: a custom headline, a two-sentence
 description, and the image used when the link is shared.
 
+## Instagram
+
+Once the Instagram connection is set up (a one-time technical step, see the
+technical docs), the homepage automatically shows your eight most recent
+Instagram posts, each linking to Instagram. It refreshes itself about once
+an hour; you never need to do anything beyond posting to Instagram as
+usual. Until that connection exists, the section simply stays hidden.
+
 ## Inquiries
 
 Inquiry-form submissions arrive in your email inbox with everything the

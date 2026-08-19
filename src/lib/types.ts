@@ -179,7 +179,6 @@ export interface SiteSettings {
   facebook?: string;
   pinterest?: string;
   defaultSeoDescription?: string;
-  defaultShareImage?: PhotoSource;
 }
 
 export interface Redirect {

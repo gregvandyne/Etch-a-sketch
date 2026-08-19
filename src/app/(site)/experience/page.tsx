@@ -1,6 +1,7 @@
 import { Photo } from "@/components/Photo";
+import { Testimonials } from "@/components/Testimonials";
 import { Heading, InquireBand, Label } from "@/components/ui";
-import { getExperiencePage } from "@/lib/content";
+import { getExperiencePage, getTestimonials } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata() {
@@ -16,7 +17,10 @@ export async function generateMetadata() {
 }
 
 export default async function ExperiencePage() {
-  const page = await getExperiencePage();
+  const [page, testimonials] = await Promise.all([
+    getExperiencePage(),
+    getTestimonials(),
+  ]);
 
   return (
     <>
@@ -71,6 +75,10 @@ export default async function ExperiencePage() {
           </p>
         ) : null}
       </div>
+
+      {/* Every kind word, not just the homepage favorites */}
+      <Testimonials testimonials={testimonials} heading="Kind words from clients" more={4} />
+
       <InquireBand
         location="experience"
         heading="Ready when you are"

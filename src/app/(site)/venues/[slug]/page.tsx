@@ -83,6 +83,20 @@ export default async function VenuePage({ params }: Props) {
           </div>
         ) : null}
 
+        {venue.photographs && venue.photographs.length > 0 ? (
+          <div className="mx-auto mt-14 grid max-w-5xl grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
+            {venue.photographs.map((photo, i) => (
+              <div key={i} className="reveal">
+                <Photo
+                  photo={photo}
+                  sizes="(min-width: 1024px) 330px, 50vw"
+                  aspect="4/5"
+                />
+              </div>
+            ))}
+          </div>
+        ) : null}
+
         {venue.website ? (
           <p className="mt-8 text-center">
             <a

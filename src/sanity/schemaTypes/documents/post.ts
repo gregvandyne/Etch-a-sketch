@@ -1,4 +1,4 @@
-import { EditIcon } from "@/sanity/icons";
+import { EditIcon, TagIcon } from "@/sanity/icons";
 import { defineField, defineType } from "sanity";
 
 /**
@@ -118,7 +118,7 @@ export const postCategoryType = defineType({
   name: "postCategory",
   title: "Blog category",
   type: "document",
-  icon: EditIcon,
+  icon: TagIcon,
   fields: [
     defineField({
       name: "title",

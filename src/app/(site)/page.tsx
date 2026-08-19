@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Photo } from "@/components/Photo";
 import { GalleryCard } from "@/components/GalleryCard";
+import { InstagramStrip } from "@/components/InstagramStrip";
 import { Testimonials } from "@/components/Testimonials";
 import { Button, Heading, InquireBand, Label, TextLink } from "@/components/ui";
 import { getFeaturedTestimonials, getHomePage } from "@/lib/content";
@@ -243,6 +244,9 @@ export default async function HomePage() {
       </section>
 
       <InquireBand location="homepage" />
+
+      {/* Latest from Instagram (renders only when the feed is connected) */}
+      <InstagramStrip />
     </>
   );
 }
