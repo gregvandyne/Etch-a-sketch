@@ -127,6 +127,15 @@ machine that can reach courtneystockton.com. Preview first with
 site's web-resolution derivatives, not camera originals; suitable as
 interim content, with originals uploaded through the Studio over time.
 
+`npm run migrate:text` runs AFTER the image migration: it fetches each
+legacy post's original written content, publish date and excerpt from the
+WordPress API, converts the HTML to Portable Text (paragraphs, headings,
+quotes, lists, links), weaves the already-uploaded photographs back into
+their original positions (matched by filename), and keeps unreferenced
+image-migration photographs at the end of the story. Drafts whose body
+already contains written text are skipped. Same flags: --dry-run,
+--limit N, --include-published, --self-test.
+
 ## Instagram feed
 
 `src/lib/instagram.ts` + `src/components/InstagramStrip.tsx` render the

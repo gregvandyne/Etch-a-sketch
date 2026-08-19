@@ -9,7 +9,8 @@
     "lint": "eslint",
     "qa": "node scripts/qa.mjs",
     "seed:legacy": "node scripts/generate-legacy-seed.mjs",
-    "migrate:images": "node scripts/migrate-images.mjs"
+    "migrate:images": "node scripts/migrate-images.mjs",
+    "migrate:text": "node scripts/migrate-post-text.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
