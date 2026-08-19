@@ -111,6 +111,22 @@ validated server-side with `SANITY_API_READ_TOKEN` — no shared URL secret).
 In draft mode `sanityFetch` queries the `drafts` perspective uncached, the
 site shows a "Previewing drafts" pill, and `/api/draft-mode/disable` exits.
 
+## Image migration from the previous site
+
+`npm run migrate:images` crawls the previous WordPress site's blog posts
+(the inventory in `src/lib/legacy-posts.json`), downloads the photographs,
+uploads them to the Sanity asset store, and attaches them to the matching
+pre-seeded draft posts: first image as the featured photograph, the rest
+into the story body. Only empty fields are filled, so Studio edits are
+never overwritten; re-runs are safe (downloads cached in `migration/`,
+Sanity dedupes assets by hash).
+
+Requires `SANITY_API_WRITE_TOKEN` (Editor token) in `.env.local`, and a
+machine that can reach courtneystockton.com. Preview first with
+`npm run migrate:images -- --dry-run --limit 3`. Caveat: these are the old
+site's web-resolution derivatives, not camera originals; suitable as
+interim content, with originals uploaded through the Studio over time.
+
 ## Instagram feed
 
 `src/lib/instagram.ts` + `src/components/InstagramStrip.tsx` render the

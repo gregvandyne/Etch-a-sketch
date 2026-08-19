@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "qa": "node scripts/qa.mjs",
-    "seed:legacy": "node scripts/generate-legacy-seed.mjs"
+    "seed:legacy": "node scripts/generate-legacy-seed.mjs",
+    "migrate:images": "node scripts/migrate-images.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
@@ -28,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@sanity/client": "^7.26.2"
   }
 }
