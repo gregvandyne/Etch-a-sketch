@@ -8,6 +8,7 @@ import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { presentationTool } from "sanity/presentation";
 import { visionTool } from "@sanity/vision";
+import { media } from "sanity-plugin-media";
 
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 import { schema } from "@/sanity/schemaTypes";
@@ -57,6 +58,8 @@ export default defineConfig({
         previewMode: { enable: "/api/draft-mode/enable" },
       },
     }),
+    // "Media" tab: browse, search and tag every uploaded photograph.
+    media(),
     // GROQ playground — useful for developers, harmless for editors.
     visionTool({ defaultApiVersion: apiVersion }),
   ],
