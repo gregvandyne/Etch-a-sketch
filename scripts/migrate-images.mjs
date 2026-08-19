@@ -36,12 +36,13 @@ const USER_AGENT =
 const CRAWL_DELAY_MS = 1000;
 const MIN_BYTES = 25 * 1024;
 const MAX_BYTES = 25 * 1024 * 1024;
-const MAX_IMAGES_PER_POST = 40;
+const MAX_IMAGES_PER_POST = 80;
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes("--dry-run");
 const SELF_TEST = args.includes("--self-test");
 const INCLUDE_PUBLISHED = args.includes("--include-published");
+const DEBUG = args.includes("--debug");
 const limitIdx = args.indexOf("--limit");
 const LIMIT = limitIdx !== -1 ? Number(args[limitIdx + 1]) : Infinity;
 
@@ -59,44 +60,86 @@ function loadEnvLocal() {
   return out;
 }
 
-/* ——— image URL extraction from WordPress HTML ——— */
+/* ——— image URL extraction from WordPress HTML ———
+ * WordPress themes and lazy-load plugins scatter the real image URL across
+ * many places: src, srcset, data-src / data-lazy-src (placeholder in src),
+ * Jetpack's data-orig-file / data-large-file, lightbox <a href> links to the
+ * full-size file, and inline background-image styles. Collect them all; the
+ * shared filter keeps only real photographs from /wp-content/uploads/.
+ * Returns {urls, stats} where stats counts contributions per pattern. */
 export function extractImageUrls(html, baseUrl) {
   const urls = new Set();
-  const add = (raw) => {
+  const stats = {};
+  const add = (raw, source) => {
     if (!raw) return;
+    const trimmed = raw.trim();
+    if (trimmed.startsWith("data:")) return; // placeholder shims
     let url;
     try {
-      url = new URL(raw.trim(), baseUrl).href.split("?")[0].split("#")[0];
+      url = new URL(trimmed, baseUrl).href.split("?")[0].split("#")[0];
     } catch {
       return;
     }
     if (!/\/wp-content\/uploads\//.test(url)) return;
     if (!/\.(jpe?g|png|webp)$/i.test(url)) return;
     if (/logo|favicon|icon|watermark|signature/i.test(url)) return;
-    urls.add(url);
+    if (!urls.has(url)) {
+      urls.add(url);
+      stats[source] = (stats[source] ?? 0) + 1;
+    }
   };
 
-  for (const tag of html.match(/<img\b[^>]*>/gi) ?? []) {
-    add(tag.match(/\bsrc\s*=\s*["']([^"']+)["']/i)?.[1]);
-    const srcset = tag.match(/\bsrcset\s*=\s*["']([^"']+)["']/i)?.[1];
-    if (srcset) {
-      // Take the widest candidate from the srcset.
-      let best = null;
-      let bestW = 0;
-      for (const part of srcset.split(",")) {
-        const [u, d] = part.trim().split(/\s+/);
-        const w = d?.endsWith("w") ? parseInt(d) : 0;
-        if (w >= bestW) {
-          bestW = w;
-          best = u;
-        }
+  const widest = (srcset) => {
+    let best = null;
+    let bestW = 0;
+    for (const part of srcset.split(",")) {
+      const [u, d] = part.trim().split(/\s+/);
+      const w = d?.endsWith("w") ? parseInt(d) : 0;
+      if (w >= bestW) {
+        bestW = w;
+        best = u;
       }
-      add(best);
+    }
+    return best;
+  };
+
+  const attr = (tag, name) =>
+    tag.match(new RegExp(`\\b${name}\\s*=\\s*["']([^"']+)["']`, "i"))?.[1];
+
+  for (const tag of html.match(/<(?:img|source)\b[^>]*>/gi) ?? []) {
+    add(attr(tag, "src"), "src");
+    // Lazy-load variants: the real image hides in data-* attributes.
+    for (const name of [
+      "data-src",
+      "data-lazy-src",
+      "data-orig-file",
+      "data-large-file",
+      "data-full-url",
+      "data-large_image",
+    ]) {
+      add(attr(tag, name), name);
+    }
+    for (const name of ["srcset", "data-srcset", "data-lazy-srcset"]) {
+      const set = attr(tag, name);
+      if (set) add(widest(set), name);
     }
   }
-  add(html.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i)?.[1]);
-  add(html.match(/content=["']([^"']+)["'][^>]*property=["']og:image["']/i)?.[1]);
-  return [...urls];
+
+  // Lightbox links to the full-size file.
+  for (const m of html.matchAll(
+    /<a\b[^>]*\bhref\s*=\s*["']([^"']*\/wp-content\/uploads\/[^"']+\.(?:jpe?g|png|webp))["']/gi
+  )) {
+    add(m[1], "a-href");
+  }
+
+  // Inline background images.
+  for (const m of html.matchAll(/background(?:-image)?\s*:\s*url\((["']?)([^"')]+)\1\)/gi)) {
+    add(m[2], "background");
+  }
+
+  add(html.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i)?.[1], "og:image");
+  add(html.match(/content=["']([^"']+)["'][^>]*property=["']og:image["']/i)?.[1], "og:image");
+  return { urls: [...urls], stats };
 }
 
 /** name-768x1024.jpg → name.jpg (the WordPress full-size original). */
@@ -115,21 +158,32 @@ if (SELF_TEST) {
     <img src="/wp-content/uploads/logo-white.png">
     <img src="/wp-content/themes/foo/decoration.jpg">
     <img src="/wp-content/uploads/2020/01/anim.gif">
+    <img src="data:image/svg+xml,%3Csvg%20xmlns=..."
+         data-src="/wp-content/uploads/2021/06/lazy-portrait.jpg">
+    <img src="data:image/gif;base64,R0lGOD"
+         data-lazy-srcset="/wp-content/uploads/2021/06/lazy-set-300x200.jpg 300w,
+                           /wp-content/uploads/2021/06/lazy-set-1024x683.jpg 1024w">
+    <img data-orig-file="https://courtneystockton.com/wp-content/uploads/2021/06/jetpack-orig.jpg">
+    <a href="/wp-content/uploads/2021/06/lightbox-full.jpg"><img src="data:image/gif;base64,x"></a>
+    <div style="background-image: url('/wp-content/uploads/2021/06/bg-hero.jpg')"></div>
     <meta property="og:image" content="https://courtneystockton.com/wp-content/uploads/2021/06/hero.jpg?fit=1200" />
   `;
-  const got = extractImageUrls(fixture, SITE).sort();
-  const want = [
-    `${SITE}/wp-content/uploads/2020/01/anim.gif`, // gif must NOT appear; placeholder to assert below
-  ];
+  const got = extractImageUrls(fixture, SITE).urls.sort();
   const expectPresent = [
     `${SITE}/wp-content/uploads/2021/06/lisa-zach-0042-683x1024.jpg`,
     `${SITE}/wp-content/uploads/2021/06/reception.jpeg`,
     `${SITE}/wp-content/uploads/2021/06/hero.jpg`,
+    `${SITE}/wp-content/uploads/2021/06/lazy-portrait.jpg`,
+    `${SITE}/wp-content/uploads/2021/06/lazy-set-1024x683.jpg`,
+    `${SITE}/wp-content/uploads/2021/06/jetpack-orig.jpg`,
+    `${SITE}/wp-content/uploads/2021/06/lightbox-full.jpg`,
+    `${SITE}/wp-content/uploads/2021/06/bg-hero.jpg`,
   ];
   const expectAbsent = [
     `${SITE}/wp-content/uploads/logo-white.png`,
     `${SITE}/wp-content/themes/foo/decoration.jpg`,
-    want[0],
+    `${SITE}/wp-content/uploads/2020/01/anim.gif`,
+    `${SITE}/wp-content/uploads/2021/06/lazy-set-300x200.jpg`,
   ];
   let ok = true;
   for (const u of expectPresent)
@@ -245,7 +299,16 @@ for (const post of targets) {
     continue;
   }
 
-  const urls = extractImageUrls(html, pageUrl).slice(0, MAX_IMAGES_PER_POST);
+  if (DEBUG) {
+    const debugDir = join(process.cwd(), "migration", "debug");
+    mkdirSync(debugDir, { recursive: true });
+    writeFileSync(join(debugDir, `${post.slug}.html`), html);
+  }
+  const extracted = extractImageUrls(html, pageUrl);
+  if (DEBUG) {
+    log(`  [debug] extraction sources: ${JSON.stringify(extracted.stats)}`);
+  }
+  const urls = extracted.urls.slice(0, MAX_IMAGES_PER_POST);
   const files = [];
   for (const url of urls) {
     try {
