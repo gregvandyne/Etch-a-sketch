@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 
 import type { PhotoSource } from "@/lib/types";
-import { Lightbox } from "./GalleryViewer";
+import { Lightbox, useLightboxDeepLink } from "./GalleryViewer";
 import { Photo } from "./Photo";
 
 /**
@@ -27,6 +27,7 @@ export function CollageGallery({
   eagerCount?: number;
 }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  useLightboxDeepLink(photographs?.length ?? 0, setLightbox);
 
   if (!photographs || photographs.length === 0) return null;
 

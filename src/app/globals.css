@@ -162,6 +162,36 @@ body {
   }
 }
 
+/* Lightbox crossfade: outgoing fades over --dur-fade-out; the incoming
+   frame starts 200ms in and fades over --dur-fade-in, so the two overlap
+   and the stage is never empty. Near-instant under reduced motion. */
+.lb-fade-out {
+  animation: lb-fade-out var(--dur-fade-out) var(--ease-in-out) forwards;
+}
+.lb-fade-in {
+  opacity: 0;
+  animation: lb-fade-in var(--dur-fade-in) var(--ease-out) 200ms forwards;
+}
+@keyframes lb-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes lb-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb-fade-out {
+    animation-duration: 1ms;
+  }
+  .lb-fade-in {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+}
+
 /* Prevent CLS on images that use aspect-ratio boxes */
 img {
   max-width: 100%;
