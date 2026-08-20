@@ -1,8 +1,10 @@
 import { Photo } from "@/components/Photo";
 import { Testimonials } from "@/components/Testimonials";
 import { Heading, InquireBand, Label } from "@/components/ui";
-import { getExperiencePage, getTestimonials } from "@/lib/content";
+import { getCategoryPhotographs, getExperiencePage, getTestimonials } from "@/lib/content";
+import { createPhotoPicker, hasImage } from "@/lib/photo-fallback";
 import { buildMetadata } from "@/lib/seo";
+import type { GalleryCategory } from "@/lib/types";
 
 export async function generateMetadata() {
   const page = await getExperiencePage();
@@ -17,10 +19,27 @@ export async function generateMetadata() {
 }
 
 export default async function ExperiencePage() {
-  const [page, testimonials] = await Promise.all([
+  const [page, testimonials, wedding, engagement, family] = await Promise.all([
     getExperiencePage(),
     getTestimonials(),
+    getCategoryPhotographs("wedding"),
+    getCategoryPhotographs("engagement"),
+    getCategoryPhotographs("family"),
   ]);
+
+  // Empty image slots borrow portfolio photographs (a Studio-set image
+  // always wins): the hero from her weddings, the steps rotating through
+  // the categories so the page shows the breadth of her work.
+  const pick = createPhotoPicker(
+    { wedding, engagement, family },
+    [page.heroImage, ...(page.steps ?? []).map((s) => s.image)]
+  );
+  const heroImage = hasImage(page.heroImage) ? page.heroImage : pick("wedding");
+  const rotation: GalleryCategory[] = ["wedding", "engagement", "family"];
+  const steps = (page.steps ?? []).map((step, i) => ({
+    ...step,
+    image: hasImage(step.image) ? step.image : pick(rotation[i % rotation.length]),
+  }));
 
   return (
     <>
@@ -33,10 +52,10 @@ export default async function ExperiencePage() {
           ) : null}
         </div>
 
-        {page.heroImage ? (
+        {heroImage ? (
           <div className="mx-auto mt-14 max-w-5xl">
             <Photo
-              photo={page.heroImage}
+              photo={heroImage}
               sizes="(min-width: 1024px) 1024px, 100vw"
               aspect="16/9"
               priority
@@ -45,9 +64,9 @@ export default async function ExperiencePage() {
         ) : null}
 
         {/* Steps */}
-        {page.steps && page.steps.length > 0 ? (
+        {steps.length > 0 ? (
           <ol className="mx-auto mt-20 max-w-3xl space-y-16">
-            {page.steps.map((step, i) => (
+            {steps.map((step, i) => (
               <li key={i} className="reveal grid gap-6 sm:grid-cols-12">
                 <div className="sm:col-span-2">
                   <span className="font-display text-5xl text-sand" aria-hidden="true">

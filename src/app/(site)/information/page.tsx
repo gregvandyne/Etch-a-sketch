@@ -3,8 +3,9 @@ import { Photo } from "@/components/Photo";
 import { Prose } from "@/components/Prose";
 import { Heading, InquireBand, Label } from "@/components/ui";
 import { getCategoryPhotographs, getInvestmentPage } from "@/lib/content";
+import { createPhotoPicker, hasImage } from "@/lib/photo-fallback";
 import { buildMetadata } from "@/lib/seo";
-import type { GalleryCategory, PhotoSource } from "@/lib/types";
+import type { GalleryCategory } from "@/lib/types";
 
 // Preserves the existing /information URL from the previous website.
 export async function generateMetadata() {
@@ -19,9 +20,6 @@ export async function generateMetadata() {
   });
 }
 
-const photoKey = (p?: PhotoSource | null) => p?.placeholder ?? p?.asset?._ref ?? "";
-const hasImage = (p?: PhotoSource | null) => Boolean(p?.asset || p?.placeholder);
-
 export default async function InformationPage() {
   const [page, weddingPhotos, engagementPhotos, familyPhotos] = await Promise.all([
     getInvestmentPage(),
@@ -33,15 +31,9 @@ export default async function InformationPage() {
   // Offerings without a CMS image borrow a portfolio photograph that matches
   // what the offering is about, never repeating one on the page. An image
   // set in the Studio always wins.
-  const pools: Record<GalleryCategory, PhotoSource[]> = {
-    wedding: weddingPhotos,
-    engagement: engagementPhotos,
-    family: familyPhotos,
-  };
-  const used = new Set(
+  const pick = createPhotoPicker(
+    { wedding: weddingPhotos, engagement: engagementPhotos, family: familyPhotos },
     [page.heroImage, ...(page.offerings ?? []).map((o) => o.image)]
-      .filter(hasImage)
-      .map(photoKey)
   );
   const fallbackFor = (title = "") => {
     const t = title.toLowerCase();
@@ -50,9 +42,7 @@ export default async function InformationPage() {
       : /engage|proposal|couple/.test(t)
         ? "engagement"
         : "wedding";
-    const photo = pools[category].find((p) => !used.has(photoKey(p)));
-    if (photo) used.add(photoKey(photo));
-    return photo;
+    return pick(category);
   };
   const offerings = (page.offerings ?? []).map((o) => ({
     ...o,
