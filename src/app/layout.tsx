@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter, Josefin_Sans, Sacramento } from "next/font/google";
 import Script from "next/script";
 
 import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -17,6 +17,22 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500"],
+  display: "swap",
+});
+
+// The airy, wide-tracked uppercase voice of the original site's headings.
+const josefin = Josefin_Sans({
+  variable: "--font-josefin",
+  subsets: ["latin"],
+  weight: ["300", "400", "600"],
+  display: "swap",
+});
+
+// Handwritten accents — "welcome to", "stockton".
+const sacramento = Sacramento({
+  variable: "--font-sacramento",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -41,7 +57,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${inter.variable} ${josefin.variable} ${sacramento.variable}`}
+    >
       <body className="antialiased">
         {children}
         {plausibleDomain ? (

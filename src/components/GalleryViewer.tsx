@@ -78,7 +78,7 @@ export function GalleryViewer({ photographs }: { photographs: PhotoSource[] }) {
   );
 }
 
-function Lightbox({
+export function Lightbox({
   photographs,
   index,
   onNavigate,

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CollageGallery } from "@/components/CollageGallery";
 import { ContentViewTracker } from "@/components/ContentViewTracker";
 import { GalleryGrid } from "@/components/GalleryCard";
 import { GalleryViewer } from "@/components/GalleryViewer";
@@ -47,6 +48,10 @@ export async function CategoryPage({ category }: { category: CategoryKey }) {
       "Warm, unhurried photographs of your people, at home, in the meadow, or among the vines. Little ones welcome exactly as they are.",
   };
 
+  const others = (Object.keys(CATEGORY_META) as CategoryKey[]).filter(
+    (key) => key !== category
+  );
+
   return (
     <>
       <ContentViewTracker
@@ -55,16 +60,41 @@ export async function CategoryPage({ category }: { category: CategoryKey }) {
         props={{ category }}
       />
       <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:py-20">
-        <div className="mx-auto mb-14 max-w-2xl text-center lg:mb-20">
-          <Label className="mb-5">The portfolio</Label>
-          <Heading as="h1">{meta.plural}</Heading>
-          <p className="mt-6 leading-relaxed text-umber">{intro[category]}</p>
-        </div>
+        {photographs.length === 0 ? (
+          <div className="mx-auto mb-14 max-w-2xl text-center lg:mb-20">
+            <Label className="mb-5">The portfolio</Label>
+            <Heading as="h1">{meta.plural}</Heading>
+            <p className="mt-6 leading-relaxed text-umber">{intro[category]}</p>
+          </div>
+        ) : null}
 
         {photographs.length > 0 ? (
-          <div className="mx-auto max-w-4xl">
-            <GalleryViewer photographs={photographs} />
-          </div>
+          <CollageGallery
+            photographs={photographs}
+            asideFirst
+            aside={
+              <div className="lg:pr-6">
+                <Label className="mb-5">The portfolio</Label>
+                <Heading as="h1">{meta.plural}</Heading>
+                <p className="mt-6 leading-relaxed text-umber">{intro[category]}</p>
+                <div className="mt-9">
+                  <TextLink href="/contact">Inquire</TextLink>
+                </div>
+                <ul className="mt-12 space-y-4 border-t border-linen pt-8">
+                  {others.map((key) => (
+                    <li key={key}>
+                      <Link
+                        href={CATEGORY_META[key].path}
+                        className="font-heading text-base text-charcoal transition-colors hover:text-wine"
+                      >
+                        {CATEGORY_META[key].plural}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            }
+          />
         ) : stories.length === 0 ? (
           <div className="border border-linen bg-parchment px-8 py-20 text-center">
             <p className="font-display text-2xl text-ink">New stories are on their way</p>

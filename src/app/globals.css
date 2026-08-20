@@ -12,9 +12,15 @@
   --color-charcoal: #2b2823;
   --color-ink: #1d1b18;
   --color-wine: #6b3f39;
+  /* From the original site: the warm band behind the manifesto, and the
+     pale blush of the ghosted "COURTNEY" wordmark. */
+  --color-cream: #f2e9db;
+  --color-blush: #f3ddc9;
 
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-body: var(--font-inter), "Inter", -apple-system, "Segoe UI", sans-serif;
+  --font-heading: var(--font-josefin), "Josefin Sans", "Century Gothic", "Futura", sans-serif;
+  --font-script: var(--font-sacramento), "Sacramento", "Snell Roundhand", cursive;
 
   --tracking-label: 0.18em;
 }
@@ -42,12 +48,29 @@ body {
 /* Component classes live in the components layer so Tailwind utilities
    (e.g. text-ivory on a dark button) can override their defaults. */
 @layer components {
-  /* Editorial display type */
+  /* Editorial display type — italic serif accents and captions */
   .font-display {
     font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.08;
     letter-spacing: -0.01em;
+  }
+
+  /* Headline voice from the original site: light, airy, wide-tracked caps */
+  .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 300;
+    letter-spacing: 0.24em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  /* Handwritten script accents ("welcome to", "stockton") */
+  .font-script {
+    font-family: var(--font-script);
+    font-weight: 400;
+    line-height: 1;
+    text-transform: none;
   }
 
   /* Small uppercase labels — the quiet sans voice of the site */

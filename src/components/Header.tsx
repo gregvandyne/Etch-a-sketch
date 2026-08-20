@@ -6,25 +6,24 @@ import { useEffect, useRef, useState } from "react";
 
 import { track } from "@/lib/analytics";
 
-const leftNav = [
-  { href: "/weddings", label: "Weddings" },
-  { href: "/engagements", label: "Engagements" },
-  { href: "/families", label: "Families" },
-];
-
-const rightNav = [
+// Same top-level items, same order, as the original site's menu.
+const mainNav = [
+  { href: "/", label: "Home" },
   { href: "/about", label: "About" },
+  { href: "/galleries", label: "Galleries" },
+  { href: "/information", label: "Info" },
+  { href: "/contact", label: "Contact" },
+  { href: "/blog", label: "Blog" },
+  { href: "/venues", label: "Venues" },
   { href: "/experience", label: "Experience" },
-  { href: "/information", label: "Investment" },
-  { href: "/blog", label: "Journal" },
 ];
 
 const mobileNav = [
-  { href: "/", label: "Home" },
-  ...leftNav,
-  ...rightNav,
-  { href: "/venues", label: "Venues" },
-  { href: "/contact", label: "Inquire" },
+  ...mainNav.slice(0, 3),
+  { href: "/weddings", label: "Weddings" },
+  { href: "/engagements", label: "Engagements" },
+  { href: "/families", label: "Families" },
+  ...mainNav.slice(3),
 ];
 
 function NavLink({
@@ -85,7 +84,20 @@ export function Header() {
     /* No backdrop-filter on the header — it would create a containing block
        and trap the fixed-position mobile menu inside it. */
     <header className="sticky top-0 z-50 border-b border-linen bg-ivory/95">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8 lg:h-20">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8 lg:h-24">
+        {/* Wordmark — stacked, bold-tracked caps like the original site */}
+        <Link href="/" className="font-heading text-sm font-semibold leading-snug text-ink">
+          <span className="block">Courtney</span>
+          <span className="block">Stockton</span>
+        </Link>
+
+        {/* Desktop: single nav row, same items and order as the original menu */}
+        <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
+          {mainNav.map((item) => (
+            <NavLink key={item.href} {...item} current={isCurrent(item.href)} />
+          ))}
+        </nav>
+
         {/* Mobile: menu button */}
         <button
           type="button"
@@ -105,41 +117,6 @@ export function Header() {
             />
           </span>
         </button>
-
-        {/* Desktop: left nav */}
-        <nav aria-label="Portfolio" className="hidden flex-1 items-center gap-7 lg:flex">
-          {leftNav.map((item) => (
-            <NavLink key={item.href} {...item} current={isCurrent(item.href)} />
-          ))}
-        </nav>
-
-        {/* Wordmark */}
-        <Link
-          href="/"
-          className="font-display text-center text-lg tracking-[0.14em] text-ink sm:text-xl"
-        >
-          <span className="block leading-none">COURTNEY STOCKTON</span>
-          <span className="label mt-1 block text-[0.55rem] tracking-[0.42em] text-taupe">
-            PHOTOGRAPHY
-          </span>
-        </Link>
-
-        {/* Desktop: right nav */}
-        <nav
-          aria-label="Main"
-          className="hidden flex-1 items-center justify-end gap-7 lg:flex"
-        >
-          {rightNav.map((item) => (
-            <NavLink key={item.href} {...item} current={isCurrent(item.href)} />
-          ))}
-          <Link
-            href="/contact"
-            onClick={() => track("Inquiry CTA Clicked", { location: "header" })}
-            className="label border border-charcoal px-5 py-2.5 text-charcoal transition-colors duration-200 hover:bg-charcoal hover:text-ivory"
-          >
-            Inquire
-          </Link>
-        </nav>
 
         {/* Mobile: inquire shortcut keeps the primary conversion visible */}
         <Link
@@ -169,7 +146,7 @@ export function Header() {
                   track("Inquiry CTA Clicked", { location: "mobile-menu" });
               }}
               aria-current={isCurrent(item.href) && item.href !== "/" ? "page" : undefined}
-              className={`font-display border-b border-linen py-4 text-3xl text-charcoal transition-opacity ${
+              className={`font-heading border-b border-linen py-4 text-lg text-charcoal transition-opacity ${
                 open ? "opacity-100" : "opacity-0"
               }`}
               style={{ transitionDelay: open ? `${i * 35}ms` : "0ms" }}
