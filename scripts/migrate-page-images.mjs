@@ -349,7 +349,11 @@ const brandIds = new Set(
 for (const p of pages) {
   if (p.og && ogCounts.get(p.og) === 1) {
     const id = byFilename.get(baseFilename(p.og));
-    if (id && !p.assets.some((a) => a.id === id)) p.assets.push({ id, file: baseFilename(p.og) });
+    // Tagged fromOg: a share card that happens to be unique among the pages
+    // we fetched is still a graphic, so og-derived picks are last-resort
+    // fills for hero-type slots and NEVER eligible as Courtney's portrait.
+    if (id && !p.assets.some((a) => a.id === id))
+      p.assets.push({ id, file: baseFilename(p.og), fromOg: true });
   }
   p.assets = p.assets.filter((a) => !brandIds.has(a.id));
 }
@@ -397,14 +401,30 @@ const pickMany = (n, ...candidates) => {
 };
 
 // Courtney's portrait first (shared by About and the homepage intro), so a
-// hero pick never swallows it.
-const portrait = a[0] ?? portraitCandidate();
+// hero pick never swallows it. og-derived images are excluded here: the
+// live site's og:image is its beach-and-script share card, and on a page
+// where it happened to be unique it used to slip in as "the About photo"
+// and land in the introduction. A real page image or a Media-library
+// portrait match qualifies; a share card never does.
+const portrait = a.find((img) => !img.fromOg) ?? portraitCandidate();
 if (portrait) used.add(portrait.id);
 
 const hero = pick(h[0], pool.wedding);
 const heroSecondary = pick(h[1], pool.engagement);
-const philosophy = pickMany(3, h.slice(2, 5), pool.family, pool.wedding);
-const aboutPhotos = pickMany(2, a.slice(1, 3), pool.family, pool.engagement);
+// og-derived graphics are also kept out of the photo grids; portfolio
+// photographs are the better fill there.
+const philosophy = pickMany(
+  3,
+  h.slice(2, 5).filter((img) => !img.fromOg),
+  pool.family,
+  pool.wedding
+);
+const aboutPhotos = pickMany(
+  2,
+  a.slice(1, 3).filter((img) => !img.fromOg),
+  pool.family,
+  pool.engagement
+);
 const infoHero = pick(info.assets[0], pool.wedding);
 const contactImg = pick(contact.assets[0], pool.engagement);
 
