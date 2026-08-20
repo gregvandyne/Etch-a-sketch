@@ -13,6 +13,7 @@
     "migrate:text": "node scripts/migrate-post-text.mjs",
     "publish:posts": "node scripts/publish-posts.mjs",
     "migrate:pages": "node scripts/migrate-page-images.mjs",
+    "set:portrait": "node scripts/set-portrait.mjs",
     "seed:galleries": "node scripts/seed-galleries.mjs"
   },
   "dependencies": {
