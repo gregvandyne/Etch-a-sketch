@@ -97,9 +97,22 @@ for (const [category, section] of Object.entries(SECTIONS)) {
     `*[_type == "gallery" && category == $category && count(photographs) > 0][0]{ _id, title }`,
     { category }
   );
+  const ownDraftId = `drafts.gallery-${section.slug}`;
+  const ownPublishedId = `gallery-${section.slug}`;
+  if (existing && existing._id === ownDraftId && PUBLISH) {
+    // Promote the draft this script created on an earlier run.
+    const draft = await client.getDocument(ownDraftId);
+    const published = { ...draft, _id: ownPublishedId };
+    delete published._rev;
+    console.log(`✓ ${section.title}: publishing the existing draft${DRY_RUN ? " (dry-run)" : ""}`);
+    if (!DRY_RUN) {
+      await client.transaction().createOrReplace(published).delete(ownDraftId).commit();
+    }
+    continue;
+  }
   if (existing) {
     console.log(
-      `↷ ${section.title}: "${existing.title}" already has photographs; left untouched`
+      `↷ ${section.title}: "${existing.title}" (${existing._id}) already has photographs; left untouched`
     );
     continue;
   }

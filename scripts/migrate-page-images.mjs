@@ -2,8 +2,13 @@
  * Page-image mapping: place migrated photographs onto the website pages the
  * way the live site lays them out.
  *
- * Reads each live page's images IN ORDER and slots the matching uploaded
- * assets into the corresponding fields of the new site's page documents:
+ * The live theme renders its imagery with JavaScript, so the images are NOT
+ * in the HTML the server sends. Instead this asks WordPress's own API which
+ * images are attached to each page (/wp-json/wp/v2/media?parent=<page id>),
+ * in order, and falls back to scraping the page HTML (og:image, img tags,
+ * full-size links, CSS backgrounds) for anything the API doesn't list.
+ * The matching uploaded assets are slotted into the corresponding fields of
+ * the new site's page documents:
  *
  *   old homepage   → Homepage: opening photograph, second opening
  *                    photograph, philosophy photographs
@@ -90,6 +95,11 @@ function orderedImageUrls(html, baseUrl) {
     }
     return best;
   };
+  // og:image first: it's the image WordPress itself calls this page's primary.
+  for (const m of html.matchAll(/<meta\b[^>]*property\s*=\s*["']og:image(?::secure_url)?["'][^>]*>/gi)) {
+    const v = attr(m[0], "content");
+    if (v) push(v);
+  }
   for (const tag of html.match(/<(?:img|source)\b[^>]*>/gi) ?? []) {
     for (const name of ["data-orig-file", "data-large-file", "data-src", "data-lazy-src", "src"]) {
       const v = attr(tag, name);
@@ -101,7 +111,57 @@ function orderedImageUrls(html, baseUrl) {
     const set = attr(tag, "srcset") ?? attr(tag, "data-lazy-srcset");
     if (set) push(widest(set));
   }
+  // Full-size lightbox links and CSS backgrounds (JS themes often keep the
+  // real imagery in these even when no <img> tags are server-rendered).
+  for (const m of html.matchAll(/<a\b[^>]*href\s*=\s*["']([^"']*\/wp-content\/uploads\/[^"']+)["']/gi)) {
+    push(m[1]);
+  }
+  for (const m of html.matchAll(/background(?:-image)?\s*:\s*url\(\s*["']?([^"')]+)["']?\s*\)/gi)) {
+    push(m[1]);
+  }
   return urls;
+}
+
+/* ——— WordPress API: the authoritative record of a page's images ——— */
+async function wpJson(path) {
+  try {
+    const res = await fetch(`${SITE}/wp-json/wp/v2${path}`, {
+      headers: { "User-Agent": USER_AGENT },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function pageIdBySlug(slug) {
+  const rows = await wpJson(`/pages?slug=${encodeURIComponent(slug)}&_fields=id,link,slug`);
+  return rows?.[0]?.id ?? null;
+}
+
+/** The front page has no slug in the URL; find it by its link. */
+async function frontPageId() {
+  const siteRoot = SITE.replace(/\/$/, "");
+  for (let page = 1; page <= 3; page++) {
+    const rows = await wpJson(`/pages?per_page=100&page=${page}&_fields=id,link,slug`);
+    if (!rows?.length) break;
+    const hit = rows.find((r) => r.link?.replace(/\/$/, "") === siteRoot);
+    if (hit) return hit.id;
+    if (rows.length < 100) break;
+  }
+  return null;
+}
+
+/** Images attached to a page, oldest first (usually the order they were placed). */
+async function attachedImages(parentId) {
+  if (!parentId) return [];
+  const media = await wpJson(
+    `/media?parent=${parentId}&per_page=100&orderby=date&order=asc&_fields=source_url,alt_text,media_type,mime_type`
+  );
+  return (media ?? [])
+    .filter((m) => (m.media_type === "image" || /^image\//.test(m.mime_type ?? "")) && m.source_url)
+    .map((m) => ({ url: m.source_url.split("?")[0], alt: m.alt_text ?? "" }));
 }
 
 const baseFilename = (url) =>
@@ -120,19 +180,34 @@ for (const row of assetRows) {
 console.log(`${assetRows.length} assets loaded\n`);
 
 async function pageImages(path) {
+  const assets = [];
+  const addUrl = (url) => {
+    const id = byFilename.get(baseFilename(url));
+    if (id && !assets.some((a) => a.id === id)) assets.push({ id, file: baseFilename(url) });
+  };
+
+  // 1. WordPress API: the images attached to this page, in order.
+  const slug = path.replace(/^\/+|\/+$/g, "");
+  const pageId = slug === "" ? await frontPageId() : await pageIdBySlug(slug);
+  const attached = await attachedImages(pageId);
+  for (const m of attached) addUrl(m.url);
+  const source = attached.length ? `${attached.length} attached via the API` : null;
+
+  // 2. HTML fallback/supplement for anything the API didn't list.
+  let html = "";
+  let error = null;
   try {
     const res = await fetch(`${SITE}${path}`, { headers: { "User-Agent": USER_AGENT } });
-    if (!res.ok) return { path, assets: [], error: `HTTP ${res.status}` };
-    const html = await res.text();
-    const assets = [];
-    for (const url of orderedImageUrls(html, `${SITE}${path}`)) {
-      const id = byFilename.get(baseFilename(url));
-      if (id && !assets.some((a) => a.id === id)) assets.push({ id, file: baseFilename(url) });
+    if (res.ok) {
+      html = await res.text();
+      for (const url of orderedImageUrls(html, `${SITE}${path}`)) addUrl(url);
+    } else if (assets.length === 0) {
+      error = `HTTP ${res.status}`;
     }
-    return { path, assets, html };
   } catch (err) {
-    return { path, assets: [], error: err.message };
+    if (assets.length === 0) error = err.message;
   }
+  return { path, assets, html, error, source };
 }
 
 /** Find the live About page from the homepage navigation. */
@@ -190,7 +265,9 @@ const [about, info, contact] = [
 
 const show = (label, page) =>
   console.log(
-    `${label} (${page.path}): ${page.error ?? page.assets.map((a) => a.file).join(", ") ?? "none"}`
+    `${label} (${page.path}${page.source ? `, ${page.source}` : ""}): ${
+      page.error ?? (page.assets.map((a) => a.file).join(", ") || "none")
+    }`
   );
 show("Homepage images", home);
 show("About images", about);
