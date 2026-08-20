@@ -301,16 +301,51 @@ let filled = 0;
 let skipped = 0;
 let failed = 0;
 
+const WP_FIELDS = "_fields=slug,date_gmt,title,content,excerpt";
+
+/**
+ * Fetch a WordPress post by slug, falling back to its numeric ID (read from
+ * the live page's shortlink or body class) when the slug query misses —
+ * which happens when the public URL is a WordPress redirect from a slightly
+ * different internal slug.
+ */
+async function fetchWpPost(slug) {
+  const headers = { "User-Agent": USER_AGENT };
+
+  const bySlug = await fetch(
+    `${SITE}/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&${WP_FIELDS}`,
+    { headers }
+  );
+  if (bySlug.ok) {
+    const item = (await bySlug.json())[0];
+    if (item?.content?.rendered) return item;
+  }
+
+  const page = await fetch(`${SITE}/${slug}/`, { headers });
+  if (!page.ok) return null;
+  const html = await page.text();
+  const id =
+    html.match(/rel=["']shortlink["'][^>]*[?&]p=(\d+)/i)?.[1] ??
+    html.match(/[?&]p=(\d+)['"]/)?.[1] ??
+    html.match(/\bpostid-(\d+)\b/)?.[1] ??
+    html.match(/\bpage-id-(\d+)\b/)?.[1];
+  if (!id) return null;
+
+  for (const kind of ["posts", "pages"]) {
+    const byId = await fetch(`${SITE}/wp-json/wp/v2/${kind}/${id}?${WP_FIELDS}`, { headers });
+    if (byId.ok) {
+      const item = await byId.json();
+      if (item?.content?.rendered) return item;
+    }
+  }
+  return null;
+}
+
 for (const post of targets) {
-  // Original post content via the WordPress API.
+  // Original post content via the WordPress API (slug first, ID fallback).
   let wp;
   try {
-    const res = await fetch(
-      `${SITE}/wp-json/wp/v2/posts?slug=${encodeURIComponent(post.slug)}&_fields=slug,date_gmt,title,content,excerpt`,
-      { headers: { "User-Agent": USER_AGENT } }
-    );
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    wp = (await res.json())[0];
+    wp = await fetchWpPost(post.slug);
   } catch (err) {
     failed += 1;
     log(`✗ ${post.slug}: WordPress fetch failed (${err.message})`);
@@ -319,7 +354,7 @@ for (const post of targets) {
   }
   if (!wp?.content?.rendered) {
     failed += 1;
-    log(`✗ ${post.slug}: no content returned by the API`);
+    log(`✗ ${post.slug}: not found by slug or page ID; add the story by hand in the Studio`);
     await sleep(REQUEST_DELAY_MS);
     continue;
   }
