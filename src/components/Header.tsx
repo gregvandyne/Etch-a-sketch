@@ -44,8 +44,8 @@ function NavLink({
       href={href}
       onClick={onClick}
       aria-current={current ? "page" : undefined}
-      className={`label transition-colors hover:text-charcoal ${
-        current ? "text-charcoal" : ""
+      className={`label relative transition-colors hover:text-charcoal after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:bg-charcoal after:transition-transform after:duration-[var(--dur-micro)] hover:after:scale-x-100 ${
+        current ? "text-charcoal after:scale-x-100" : "after:scale-x-0"
       } ${className}`}
     >
       {label}

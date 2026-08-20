@@ -38,7 +38,7 @@ export default async function VenuesPage() {
                     sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
                     aspect="4/3"
                     priority={i < 3}
-                    className="transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.03]"
+                    className="hover-zoom"
                   />
                 </div>
                 <div className="mt-4">

@@ -40,7 +40,7 @@ export function GalleryViewer({ photographs }: { photographs: PhotoSource[] }) {
         {rows.map((row, r) => (
           <div
             key={r}
-            className={`reveal grid gap-4 sm:gap-6 ${
+            className={`reveal-image grid gap-4 sm:gap-6 ${
               row.photos.length === 2 ? "grid-cols-2" : "grid-cols-1"
             }`}
           >
@@ -48,7 +48,7 @@ export function GalleryViewer({ photographs }: { photographs: PhotoSource[] }) {
               <button
                 key={index}
                 type="button"
-                className="block w-full cursor-zoom-in"
+                className="block w-full cursor-zoom-in overflow-hidden"
                 onClick={() => setLightbox(index)}
                 aria-label={`View photograph ${index + 1} of ${photographs.length} fullscreen${photo.alt ? `: ${photo.alt}` : ""}`}
               >
@@ -59,6 +59,7 @@ export function GalleryViewer({ photographs }: { photographs: PhotoSource[] }) {
                       ? "(min-width: 1024px) 480px, 50vw"
                       : "(min-width: 1024px) 980px, 100vw"
                   }
+                  className="hover-zoom"
                 />
               </button>
             ))}

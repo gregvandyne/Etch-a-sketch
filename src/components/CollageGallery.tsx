@@ -35,12 +35,13 @@ export function CollageGallery({
       key={index}
       type="button"
       onClick={() => setLightbox(index)}
-      className="reveal block w-full cursor-zoom-in bg-linen"
+      className="reveal-image block w-full cursor-zoom-in overflow-hidden bg-linen"
       aria-label={`View photograph ${index + 1} of ${photographs.length} fullscreen${photo.alt ? `: ${photo.alt}` : ""}`}
     >
       <Photo
         photo={photo}
         sizes={aside ? "(min-width: 1024px) 30vw, 50vw" : "(min-width: 1024px) 42vw, 50vw"}
+        className="hover-zoom"
       />
     </button>
   );

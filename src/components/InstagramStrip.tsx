@@ -55,7 +55,7 @@ export async function InstagramStrip() {
                   height={400}
                   loading="lazy"
                   decoding="async"
-                  className="aspect-square w-full object-cover transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.04]"
+                  className="hover-zoom aspect-square w-full object-cover"
                 />
               </a>
             </li>

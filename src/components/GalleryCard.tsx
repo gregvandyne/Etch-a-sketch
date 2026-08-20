@@ -33,7 +33,7 @@ export function GalleryCard({
           sizes={sizes}
           aspect={aspect}
           priority={priority}
-          className="transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.03]"
+          className="hover-zoom"
         />
       </div>
       <div className="mt-4">

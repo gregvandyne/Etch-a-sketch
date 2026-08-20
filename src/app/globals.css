@@ -92,6 +92,19 @@ body {
     text-transform: uppercase;
   }
 
+  /* The one hover treatment photographs get: a slow scale inside an
+     overflow-hidden frame. Mouse-only, and off under reduced motion. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .hover-zoom {
+      transition: transform var(--dur-mid) var(--ease-out);
+    }
+    .group:hover .hover-zoom,
+    a:hover > .hover-zoom,
+    button:hover > .hover-zoom {
+      transform: scale(1.04);
+    }
+  }
+
   /* Handwritten script accents ("welcome to", "stockton") */
   .font-script {
     font-family: var(--font-script);

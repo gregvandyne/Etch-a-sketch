@@ -90,7 +90,7 @@ export default async function HomePage() {
               </div>
 
               {/* Secondary photograph in black & white, below the headline */}
-              <div className="reveal mt-14 hidden lg:mr-56 lg:block">
+              <div className="reveal-image mt-14 hidden overflow-hidden lg:mr-56 lg:block">
                 <Photo
                   photo={home.heroImage}
                   sizes="(min-width: 1024px) 42vw, 100vw"
@@ -130,7 +130,7 @@ export default async function HomePage() {
           </div>
 
           {/* Mobile: the black & white photograph after the portrait */}
-          <div className="reveal mt-5 lg:hidden">
+          <div className="reveal-image mt-5 lg:hidden">
             <Photo
               photo={home.heroImage}
               sizes="100vw"
@@ -145,7 +145,7 @@ export default async function HomePage() {
       <section>
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-12">
-            <div className="reveal mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
+            <div className="reveal-image mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
               <Photo
                 photo={home.introImage}
                 sizes="(min-width: 1024px) 38vw, (min-width: 640px) 448px, 100vw"

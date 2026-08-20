@@ -43,7 +43,7 @@ export default async function GalleriesPage() {
                     sizes="(min-width: 1024px) 400px, 100vw"
                     aspect="3/4"
                     priority={i === 0}
-                    className="transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.03]"
+                    className="hover-zoom"
                   />
                 </div>
                 <div className="mt-5 text-center">
