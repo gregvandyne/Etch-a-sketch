@@ -15,19 +15,32 @@ export function RevealProvider() {
     root.setAttribute("data-reveal-ready", "");
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
+        // Elements entering in the same tick reveal as a group: 90ms apart,
+        // capped at five steps so long rows don't trail off.
+        const entering = entries.filter((e) => e.isIntersecting);
+        entering.forEach((entry, i) => {
+          const el = entry.target as HTMLElement;
+          const delay = Math.min(i, 4) * 90;
+          if (delay > 0) {
+            el.style.transitionDelay = `${delay}ms`;
+            el.addEventListener(
+              "transitionend",
+              () => {
+                el.style.transitionDelay = "";
+              },
+              { once: true }
+            );
           }
-        }
+          el.classList.add("is-visible");
+          observer.unobserve(el);
+        });
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.05 }
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.15 }
     );
 
     const observeAll = () => {
       document
-        .querySelectorAll(".reveal:not(.is-visible)")
+        .querySelectorAll(".reveal:not(.is-visible), .reveal-image:not(.is-visible)")
         .forEach((el) => observer.observe(el));
     };
     observeAll();

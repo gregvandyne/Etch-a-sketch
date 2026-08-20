@@ -17,7 +17,7 @@ export function Testimonials({
 
   return (
     <section aria-label="Client testimonials" className="bg-parchment">
-      <div className="mx-auto max-w-4xl px-5 py-20 text-center sm:px-8 lg:py-28">
+      <div className="mx-auto max-w-4xl px-5 py-20 text-center sm:px-8 lg:py-32">
         <Label className="reveal mb-10">{heading}</Label>
         <figure className="reveal">
           <blockquote className="font-display text-2xl italic leading-snug text-ink sm:text-3xl lg:text-4xl">

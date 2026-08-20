@@ -1,17 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  /* Wine-country editorial palette — photography supplies the color. */
-  --color-ivory: #faf8f4;
-  --color-parchment: #f3efe7;
-  --color-linen: #e9e3d8;
+  /* Wine-country editorial palette — photography supplies the color.
+     The interface has no accent: emphasis is underline or letterspacing. */
+  --color-ivory: #faf8f5;
+  --color-parchment: #f2eee8;
+  --color-linen: #e5dfd7;
   --color-sand: #d8cfc0;
   /* Taupe stays warm but dark enough for 4.5:1 small-text contrast on ivory. */
   --color-taupe: #78695a;
   --color-umber: #6e6459;
-  --color-charcoal: #2b2823;
+  --color-charcoal: #2b2724;
   --color-ink: #1d1b18;
+  /* Reserved for functional error states only — never decoration. */
   --color-wine: #6b3f39;
+  /* Lightbox backdrop base, used at 0.94 alpha. */
+  --color-overlay: #14120f;
   /* From the original site: the warm band behind the manifesto, and the
      pale blush of the ghosted "COURTNEY" wordmark. */
   --color-cream: #f2e9db;
@@ -22,12 +26,35 @@
   --font-heading: var(--font-josefin), "Josefin Sans", "Century Gothic", "Futura", sans-serif;
   --font-script: var(--font-sacramento), "Sacramento", "Snell Roundhand", cursive;
 
-  --tracking-label: 0.18em;
+  /* One tracking value for every letterspaced-caps instance. */
+  --tracking-label: 0.2em;
+
+  /* Motion — the only two curves on the site, and the durations everything
+     resolves to. --ease-out for anything entering or settling; --ease-in-out
+     for anything reversible or interrupted. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --default-transition-timing-function: var(--ease-out);
+  --default-transition-duration: 220ms;
+
+  --dur-micro: 220ms;
+  --dur-short: 400ms;
+  --dur-mid: 700ms;
+  --dur-long: 900ms;
+  --dur-image: 1200ms;
+  --dur-fade-out: 250ms;
+  --dur-fade-in: 400ms;
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Native anchor smoothing only — no scroll libraries, and off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -60,9 +87,22 @@ body {
   .font-heading {
     font-family: var(--font-heading);
     font-weight: 300;
-    letter-spacing: 0.24em;
+    letter-spacing: var(--tracking-label);
     line-height: 1.35;
     text-transform: uppercase;
+  }
+
+  /* The one hover treatment photographs get: a slow scale inside an
+     overflow-hidden frame. Mouse-only, and off under reduced motion. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .hover-zoom {
+      transition: transform var(--dur-mid) var(--ease-out);
+    }
+    .group:hover .hover-zoom,
+    a:hover > .hover-zoom,
+    button:hover > .hover-zoom {
+      transform: scale(1.04);
+    }
   }
 
   /* Handwritten script accents ("welcome to", "stockton") */
@@ -84,11 +124,11 @@ body {
   }
 }
 
-/* Focus visibility — consistent, elegant, never removed */
+/* Focus visibility — consistent, elegant, never removed. currentColor keeps
+   the outline ink on light surfaces and ivory inside the dark lightbox. */
 :focus-visible {
-  outline: 2px solid var(--color-wine);
-  outline-offset: 3px;
-  border-radius: 1px;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 /* Reveal-on-scroll: starts visible for no-JS and reduced-motion users;
@@ -98,12 +138,57 @@ body {
     opacity: 0;
     transform: translateY(1.25rem);
     transition:
-      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity var(--dur-long) var(--ease-out),
+      transform var(--dur-long) var(--ease-out);
   }
-  [data-reveal-ready] .reveal.is-visible {
+  /* Photographs settle into place with a slow scale, never a translate. */
+  [data-reveal-ready] .reveal-image {
+    opacity: 0;
+    transform: scale(1.04);
+    transition:
+      opacity var(--dur-image) var(--ease-out),
+      transform var(--dur-image) var(--ease-out);
+  }
+  /* Hint the compositor only while a reveal is pending; the hint drops
+     automatically once is-visible lands. */
+  [data-reveal-ready] .reveal:not(.is-visible),
+  [data-reveal-ready] .reveal-image:not(.is-visible) {
+    will-change: opacity, transform;
+  }
+  [data-reveal-ready] .reveal.is-visible,
+  [data-reveal-ready] .reveal-image.is-visible {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* Lightbox crossfade: outgoing fades over --dur-fade-out; the incoming
+   frame starts 200ms in and fades over --dur-fade-in, so the two overlap
+   and the stage is never empty. Near-instant under reduced motion. */
+.lb-fade-out {
+  animation: lb-fade-out var(--dur-fade-out) var(--ease-in-out) forwards;
+}
+.lb-fade-in {
+  opacity: 0;
+  animation: lb-fade-in var(--dur-fade-in) var(--ease-out) 200ms forwards;
+}
+@keyframes lb-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes lb-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb-fade-out {
+    animation-duration: 1ms;
+  }
+  .lb-fade-in {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
   }
 }
 

@@ -69,7 +69,7 @@ export function Button({
       : variant === "light"
         ? "border border-ivory text-ivory hover:bg-ivory hover:text-charcoal"
         : "border border-charcoal text-charcoal hover:bg-charcoal hover:text-ivory";
-  const cls = `label inline-block px-8 py-4 transition-colors duration-200 ${styles} ${className}`;
+  const cls = `label inline-block px-8 py-4 transition-colors ${styles} ${className}`;
 
   if (trackInquiry) {
     return (
@@ -102,7 +102,7 @@ export function InquireBand({
 }) {
   return (
     <section className="border-t border-linen bg-ivory">
-      <div className="reveal mx-auto max-w-3xl px-5 py-20 text-center sm:px-8 lg:py-28">
+      <div className="reveal mx-auto max-w-3xl px-5 py-20 text-center sm:px-8 lg:py-32">
         <Label className="mb-5">Begin here</Label>
         <h2 className="font-display text-3xl text-ink sm:text-4xl lg:text-5xl">{heading}</h2>
         <p className="mx-auto mt-5 max-w-xl text-umber">{text}</p>

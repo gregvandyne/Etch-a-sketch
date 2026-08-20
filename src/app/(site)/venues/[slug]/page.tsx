@@ -127,7 +127,7 @@ export default async function VenuePage({ params }: Props) {
                 <li key={post._id}>
                   <Link
                     href={`/${post.slug}`}
-                    className="font-display text-2xl text-charcoal hover:text-wine"
+                    className="font-display text-2xl text-charcoal underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current"
                   >
                     {post.title}
                   </Link>

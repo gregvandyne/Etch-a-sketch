@@ -44,8 +44,8 @@ function NavLink({
       href={href}
       onClick={onClick}
       aria-current={current ? "page" : undefined}
-      className={`label transition-colors duration-200 hover:text-charcoal ${
-        current ? "text-charcoal" : ""
+      className={`label relative transition-colors hover:text-charcoal after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:bg-charcoal after:transition-transform after:duration-[var(--dur-micro)] hover:after:scale-x-100 ${
+        current ? "text-charcoal after:scale-x-100" : "after:scale-x-0"
       } ${className}`}
     >
       {label}
@@ -110,10 +110,10 @@ export function Header() {
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
           <span aria-hidden="true" className="relative block h-3 w-5">
             <span
-              className={`absolute left-0 top-0 h-px w-full bg-charcoal transition-transform duration-300 ${open ? "top-1/2 rotate-45" : ""}`}
+              className={`absolute left-0 top-0 h-px w-full bg-charcoal transition-transform ${open ? "top-1/2 rotate-45" : ""}`}
             />
             <span
-              className={`absolute left-0 bottom-0 h-px w-full bg-charcoal transition-transform duration-300 ${open ? "bottom-1/2 -rotate-45" : ""}`}
+              className={`absolute left-0 bottom-0 h-px w-full bg-charcoal transition-transform ${open ? "bottom-1/2 -rotate-45" : ""}`}
             />
           </span>
         </button>
@@ -131,7 +131,7 @@ export function Header() {
       {/* Mobile menu */}
       <div
         id="mobile-menu"
-        className={`fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto bg-ivory transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto bg-ivory transition-opacity lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >

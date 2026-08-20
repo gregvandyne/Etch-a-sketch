@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 
 import type { PhotoSource } from "@/lib/types";
-import { Lightbox } from "./GalleryViewer";
+import { Lightbox, useLightboxDeepLink } from "./GalleryViewer";
 import { Photo } from "./Photo";
 
 /**
@@ -16,14 +16,18 @@ export function CollageGallery({
   photographs,
   aside,
   asideFirst = false,
+  eagerCount = 0,
 }: {
   photographs: PhotoSource[];
   /** Pinned text block (title, quote, links) that photos scroll past. */
   aside?: ReactNode;
   /** Pin the text on the left instead of the right. */
   asideFirst?: boolean;
+  /** How many leading photographs load eagerly (above-the-fold rows). */
+  eagerCount?: number;
 }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  useLightboxDeepLink(photographs?.length ?? 0, setLightbox);
 
   if (!photographs || photographs.length === 0) return null;
 
@@ -35,12 +39,14 @@ export function CollageGallery({
       key={index}
       type="button"
       onClick={() => setLightbox(index)}
-      className="reveal block w-full cursor-zoom-in bg-linen"
+      className="reveal-image block w-full cursor-zoom-in overflow-hidden bg-linen"
       aria-label={`View photograph ${index + 1} of ${photographs.length} fullscreen${photo.alt ? `: ${photo.alt}` : ""}`}
     >
       <Photo
         photo={photo}
         sizes={aside ? "(min-width: 1024px) 30vw, 50vw" : "(min-width: 1024px) 42vw, 50vw"}
+        className="hover-zoom"
+        priority={index < eagerCount}
       />
     </button>
   );

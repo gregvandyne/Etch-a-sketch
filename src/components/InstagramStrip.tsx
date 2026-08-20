@@ -25,7 +25,7 @@ export async function InstagramStrip() {
               href={settings.instagram}
               event="Social Link Clicked"
               eventProps={{ network: "Instagram", location: "instagram-strip" }}
-              className="font-display text-2xl italic text-ink hover:text-wine sm:text-3xl"
+              className="font-display text-2xl italic text-ink underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current sm:text-3xl"
               external
             >
               @{handle}
@@ -55,7 +55,7 @@ export async function InstagramStrip() {
                   height={400}
                   loading="lazy"
                   decoding="async"
-                  className="aspect-square w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  className="hover-zoom aspect-square w-full object-cover"
                 />
               </a>
             </li>
