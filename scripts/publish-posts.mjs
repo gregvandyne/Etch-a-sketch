@@ -42,7 +42,16 @@ if (!projectId || !token) {
   console.error("Missing NEXT_PUBLIC_SANITY_PROJECT_ID or SANITY_API_WRITE_TOKEN in .env.local.");
   process.exit(1);
 }
-const client = createClient({ projectId, dataset, apiVersion: "2025-06-01", token, useCdn: false });
+// perspective "raw" is required to see DRAFT documents in queries; the
+// client's default perspective only returns published content.
+const client = createClient({
+  projectId,
+  dataset,
+  apiVersion: "2025-06-01",
+  token,
+  useCdn: false,
+  perspective: "raw",
+});
 
 const drafts = await client.fetch(
   `*[_type == "post" && _id in path("drafts.**")] | order(publishedAt asc)`
