@@ -77,6 +77,15 @@ export const gallerySlugsQuery = defineQuery(
   `*[_type == "gallery" && defined(slug.current)]{ "slug": slug.current, category }`
 );
 
+/** Every photograph in a category, gallery by gallery (featured first), for
+ *  the inline portfolio grid on /weddings, /engagements and /families. */
+export const categoryPhotographsQuery = defineQuery(
+  `*[_type == "gallery" && category == $category] | order(featured desc, date desc) {
+    coverImage ${IMG},
+    photographs[] ${IMG}
+  }`
+);
+
 export const galleryBySlugQuery = defineQuery(`*[_type == "gallery" && slug.current == $slug && category == $category][0]{
   _id, title, "slug": slug.current, category, location, date,
   coverImage ${IMG},

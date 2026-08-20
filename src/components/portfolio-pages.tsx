@@ -8,7 +8,12 @@ import { GalleryViewer } from "@/components/GalleryViewer";
 import { Photo } from "@/components/Photo";
 import { Prose } from "@/components/Prose";
 import { Heading, InquireBand, Label, TextLink } from "@/components/ui";
-import { getGalleries, getGallery, getGallerySlugs } from "@/lib/content";
+import {
+  getCategoryPhotographs,
+  getGalleries,
+  getGallery,
+  getGallerySlugs,
+} from "@/lib/content";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 import { CATEGORY_META, type CategoryKey } from "@/lib/site";
 
@@ -25,7 +30,13 @@ export function categoryMetadata(category: CategoryKey): Metadata {
 
 export async function CategoryPage({ category }: { category: CategoryKey }) {
   const meta = CATEGORY_META[category];
-  const galleries = await getGalleries(category);
+  const [galleries, photographs] = await Promise.all([
+    getGalleries(category),
+    getCategoryPhotographs(category),
+  ]);
+  // The "-highlights" galleries exist to hold the portfolio photos shown
+  // inline below; individually curated stories still get their own cards.
+  const stories = galleries.filter((g) => !g.slug.endsWith("-highlights"));
 
   const intro: Record<CategoryKey, string> = {
     wedding:
@@ -50,9 +61,11 @@ export async function CategoryPage({ category }: { category: CategoryKey }) {
           <p className="mt-6 leading-relaxed text-umber">{intro[category]}</p>
         </div>
 
-        {galleries.length > 0 ? (
-          <GalleryGrid galleries={galleries} />
-        ) : (
+        {photographs.length > 0 ? (
+          <div className="mx-auto max-w-4xl">
+            <GalleryViewer photographs={photographs} />
+          </div>
+        ) : stories.length === 0 ? (
           <div className="border border-linen bg-parchment px-8 py-20 text-center">
             <p className="font-display text-2xl text-ink">New stories are on their way</p>
             <p className="mx-auto mt-3 max-w-md text-umber">
@@ -63,7 +76,18 @@ export async function CategoryPage({ category }: { category: CategoryKey }) {
               <TextLink href="/contact">Start an inquiry</TextLink>
             </div>
           </div>
-        )}
+        ) : null}
+
+        {stories.length > 0 ? (
+          <div className={photographs.length > 0 ? "mt-20 lg:mt-28" : ""}>
+            {photographs.length > 0 ? (
+              <div className="mb-10 text-center">
+                <Label>Featured stories</Label>
+              </div>
+            ) : null}
+            <GalleryGrid galleries={stories} />
+          </div>
+        ) : null}
       </div>
       <InquireBand
         location={`portfolio-${category}`}

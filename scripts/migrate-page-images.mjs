@@ -3,29 +3,40 @@
  * way the live site lays them out.
  *
  * The live theme renders its imagery with JavaScript, so the images are NOT
- * in the HTML the server sends. Instead this asks WordPress's own API which
- * images are attached to each page (/wp-json/wp/v2/media?parent=<page id>),
- * in order, and falls back to scraping the page HTML (og:image, img tags,
- * full-size links, CSS backgrounds) for anything the API doesn't list.
- * The matching uploaded assets are slotted into the corresponding fields of
- * the new site's page documents:
+ * in the HTML the server sends. This script therefore works through three
+ * sources, best first:
  *
- *   old homepage   → Homepage: opening photograph, second opening
- *                    photograph, philosophy photographs
- *   old about page → About: portrait (+ Homepage introduction photograph,
- *                    so Courtney's portrait appears in her intro),
- *                    additional photographs
- *   /information   → Investment: opening photograph
- *   /contact       → Contact: photograph
+ *   1. WordPress's own API record of which images are attached to each page
+ *      (/wp-json/wp/v2/media?parent=<page id>), in order.
+ *   2. The page HTML (img tags, full-size links, CSS backgrounds), plus the
+ *      page's og:image WHEN it is unique to that page. An og:image shared
+ *      by several pages is the site's logo/social-share card, not a photo,
+ *      and is excluded everywhere.
+ *   3. The published portfolio galleries (Weddings / Engagements /
+ *      Families): known-good photographs used to fill any slot the live
+ *      site gave nothing for, so the hero is never left empty.
  *
- * Only EMPTY fields are filled. The dry run prints exactly which image
- * file lands in which field so mis-guesses can be caught before writing;
- * anything imperfect is a 30-second swap in the Studio afterwards (all
- * images are already in the Media library).
+ * Courtney's portrait is special-cased: only an image the live About page
+ * offers, or a Media-library asset whose filename/alt/title reads like a
+ * portrait or headshot, is used. A portfolio photo of a client is never
+ * guessed as her portrait; if nothing matches, the field is left for the
+ * Studio.
  *
- * Run AFTER the image migration:
+ * Field mapping:
+ *   Homepage: opening photograph, second opening photograph, introduction
+ *             photograph (Courtney's portrait), philosophy photographs
+ *   About:    portrait, additional photographs
+ *   /information → Investment: opening photograph
+ *   /contact     → Contact: photograph
+ *
+ * Only EMPTY fields are filled unless --redo is passed, which replaces the
+ * fields this script manages with its current picks (use it to correct an
+ * earlier bad guess). The dry run prints exactly which image lands where.
+ *
+ * Run AFTER the image migration and seed:galleries:
  *   npm run migrate:pages -- --dry-run
  *   npm run migrate:pages
+ *   npm run migrate:pages -- --redo        # replace earlier picks
  */
 import { createClient } from "@sanity/client";
 import { createHash } from "node:crypto";
@@ -38,6 +49,7 @@ const USER_AGENT =
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes("--dry-run");
+const REDO = args.includes("--redo");
 
 const key = () => createHash("md5").update(String(Math.random())).digest("hex").slice(0, 12);
 
@@ -95,11 +107,6 @@ function orderedImageUrls(html, baseUrl) {
     }
     return best;
   };
-  // og:image first: it's the image WordPress itself calls this page's primary.
-  for (const m of html.matchAll(/<meta\b[^>]*property\s*=\s*["']og:image(?::secure_url)?["'][^>]*>/gi)) {
-    const v = attr(m[0], "content");
-    if (v) push(v);
-  }
   for (const tag of html.match(/<(?:img|source)\b[^>]*>/gi) ?? []) {
     for (const name of ["data-orig-file", "data-large-file", "data-src", "data-lazy-src", "src"]) {
       const v = attr(tag, name);
@@ -120,6 +127,19 @@ function orderedImageUrls(html, baseUrl) {
     push(m[1]);
   }
   return urls;
+}
+
+/** The page's og:image, if any. Handled separately from the ordered list so
+ *  a site-wide share card can be detected and excluded (see below). */
+function ogImageUrl(html) {
+  const tag = html?.match(/<meta\b[^>]*property\s*=\s*["']og:image(?::secure_url)?["'][^>]*>/i)?.[0];
+  const v = tag?.match(/\bcontent\s*=\s*["']([^"']+)["']/i)?.[1];
+  if (!v) return null;
+  try {
+    return new URL(v, SITE).href.split("?")[0].split("#")[0];
+  } catch {
+    return null;
+  }
 }
 
 /* ——— WordPress API: the authoritative record of a page's images ——— */
@@ -169,7 +189,9 @@ const baseFilename = (url) =>
 
 /* Asset lookup by filename (uploaded by the image migration). */
 console.log("Loading uploaded image assets from Sanity…");
-const assetRows = await client.fetch(`*[_type == "sanity.imageAsset"]{ _id, originalFilename }`);
+const assetRows = await client.fetch(
+  `*[_type == "sanity.imageAsset"]{ _id, originalFilename, altText, title }`
+);
 const byFilename = new Map();
 for (const row of assetRows) {
   if (!row.originalFilename) continue;
@@ -207,7 +229,7 @@ async function pageImages(path) {
   } catch (err) {
     if (assets.length === 0) error = err.message;
   }
-  return { path, assets, html, error, source };
+  return { path, assets, html, error, source, og: html ? ogImageUrl(html) : null };
 }
 
 /** Find the live About page from the homepage navigation. */
@@ -227,13 +249,60 @@ function findAboutPath(homeHtml) {
   return "/about";
 }
 
+/** Known-good portfolio photographs, by category, for slots the live site
+ *  gave nothing for. Reads the published galleries (seed:galleries). */
+async function portfolioPool() {
+  const gals = await client.fetch(
+    `*[_type == "gallery" && category in ["wedding", "engagement", "family"]]{
+      category, coverImage, photographs
+    }`
+  );
+  const pool = { wedding: [], engagement: [], family: [] };
+  for (const g of gals) {
+    const list = [g.coverImage, ...(g.photographs ?? [])];
+    for (const p of list) {
+      if (!p?.asset?._ref || pool[g.category].some((x) => x.id === p.asset._ref)) continue;
+      pool[g.category].push({
+        id: p.asset._ref,
+        alt: p.alt,
+        file: `portfolio: ${g.category} photo ${pool[g.category].length + 1}`,
+      });
+    }
+  }
+  return pool;
+}
+
+/** Best guess at an actual portrait/headshot of Courtney from the Media
+ *  library metadata. Deliberately conservative: better to leave the field
+ *  empty than to put a client's photo in her introduction. */
+function portraitCandidate() {
+  const text = (r) => `${r.originalFilename ?? ""} ${r.altText ?? ""} ${r.title ?? ""}`.toLowerCase();
+  let best = null;
+  let bestScore = 0;
+  for (const r of assetRows) {
+    const t = text(r);
+    if (/logo|brand|icon|watermark|favicon|card/.test(t)) continue;
+    let s = 0;
+    if (/headshot/.test(t)) s += 4;
+    if (/portrait/.test(t)) s += 2;
+    if (/\babout\b|\bbio\b|meet/.test(t)) s += 2;
+    if (/courtney/.test(t)) s += 1;
+    if (s >= 4 && s > bestScore) {
+      bestScore = s;
+      best = r;
+    }
+  }
+  return best ? { id: best._id, file: best.originalFilename ?? "(media-library asset)" } : undefined;
+}
+
 const photo = (assetId, alt) => ({
   _type: "photograph",
   asset: { _type: "reference", _ref: assetId },
   ...(alt ? { alt } : {}),
 });
 
-/** Patch the singleton's draft if one exists, else its published document. */
+/** Patch the singleton's draft if one exists, else its published document.
+ *  Empty fields are filled; --redo replaces the managed fields outright. */
 async function fillPage(type, fields) {
   const draft = await client.getDocument(`drafts.${type}`).catch(() => null);
   const doc = draft ?? (await client.getDocument(type).catch(() => null));
@@ -246,22 +315,47 @@ async function fillPage(type, fields) {
     if (value == null) continue;
     const current = doc[field];
     const empty = Array.isArray(current) ? current.length === 0 : !current?.asset && !current;
-    if (empty) sets[field] = value;
-    else console.log(`  ↷ ${type}.${field} already set; left untouched`);
+    if (empty || REDO) sets[field] = value;
+    else console.log(`  ↷ ${type}.${field} already set; left untouched (--redo replaces it)`);
   }
   if (Object.keys(sets).length === 0) return;
   for (const field of Object.keys(sets)) console.log(`  ✓ ${type}.${field} filled`);
-  if (!DRY_RUN) await client.patch(doc._id).set(sets).commit();
+  if (!DRY_RUN) {
+    await client.patch(doc._id).set(sets).commit();
+    if (draft) console.log(`  (note: ${type} has a draft open; publish it in the Studio to go live)`);
+  }
 }
 
 /* ——— gather ——— */
 const home = await pageImages("/");
 const aboutPath = findAboutPath(home.html);
-const [about, info, contact] = [
-  await pageImages(aboutPath),
-  await pageImages("/information"),
-  await pageImages("/contact"),
-];
+const about = await pageImages(aboutPath);
+const info = await pageImages("/information");
+const contact = await pageImages("/contact");
+const pages = [home, about, info, contact];
+
+/* An og:image shared by more than one page is the site's logo/social-share
+   card (for example the beach graphic with the script "C"), never page
+   content: exclude it everywhere. A unique og:image is a fine last
+   candidate for its own page. */
+const ogCounts = new Map();
+for (const p of pages) if (p.og) ogCounts.set(p.og, (ogCounts.get(p.og) ?? 0) + 1);
+const brandIds = new Set(
+  [...ogCounts]
+    .filter(([, n]) => n > 1)
+    .map(([url]) => byFilename.get(baseFilename(url)))
+    .filter(Boolean)
+);
+for (const p of pages) {
+  if (p.og && ogCounts.get(p.og) === 1) {
+    const id = byFilename.get(baseFilename(p.og));
+    if (id && !p.assets.some((a) => a.id === id)) p.assets.push({ id, file: baseFilename(p.og) });
+  }
+  p.assets = p.assets.filter((a) => !brandIds.has(a.id));
+}
+if (brandIds.size > 0) {
+  console.log(`Excluded ${brandIds.size} site-wide brand graphic(s) shared across pages.\n`);
+}
 
 const show = (label, page) =>
   console.log(
@@ -275,28 +369,68 @@ show("Information images", info);
 show("Contact images", contact);
 console.log("");
 
-/* ——— mapping plan ——— */
+/* ——— choose ——— */
+const pool = await portfolioPool();
 const h = home.assets;
 const a = about.assets;
 
+const used = new Set();
+const pick = (...candidates) => {
+  for (const c of candidates.flat()) {
+    if (c && !used.has(c.id)) {
+      used.add(c.id);
+      return c;
+    }
+  }
+  return undefined;
+};
+const pickMany = (n, ...candidates) => {
+  const out = [];
+  for (const c of candidates.flat()) {
+    if (out.length >= n) break;
+    if (c && !used.has(c.id)) {
+      used.add(c.id);
+      out.push(c);
+    }
+  }
+  return out;
+};
+
+// Courtney's portrait first (shared by About and the homepage intro), so a
+// hero pick never swallows it.
+const portrait = a[0] ?? portraitCandidate();
+if (portrait) used.add(portrait.id);
+
+const hero = pick(h[0], pool.wedding);
+const heroSecondary = pick(h[1], pool.engagement);
+const philosophy = pickMany(3, h.slice(2, 5), pool.family, pool.wedding);
+const aboutPhotos = pickMany(2, a.slice(1, 3), pool.family, pool.engagement);
+const infoHero = pick(info.assets[0], pool.wedding);
+const contactImg = pick(contact.assets[0], pool.engagement);
+
 const plan = [
-  ["homePage.heroImage", h[0]],
-  ["homePage.heroImageSecondary", h[1]],
-  ["homePage.introImage (Courtney's portrait, from the About page)", a[0]],
-  ["homePage.philosophyImages", h.slice(2, 5).length ? { files: h.slice(2, 5) } : undefined],
-  ["aboutPage.portrait", a[0]],
-  ["aboutPage.photographs", a.slice(1, 3).length ? { files: a.slice(1, 3) } : undefined],
-  ["investmentPage.heroImage", info.assets[0]],
-  ["contactPage.image", contact.assets[0]],
+  ["homePage.heroImage", hero],
+  ["homePage.heroImageSecondary", heroSecondary],
+  ["homePage.introImage (Courtney's portrait)", portrait],
+  ["homePage.philosophyImages", philosophy.length ? { files: philosophy } : undefined],
+  ["aboutPage.portrait", portrait],
+  ["aboutPage.photographs", aboutPhotos.length ? { files: aboutPhotos } : undefined],
+  ["investmentPage.heroImage", infoHero],
+  ["contactPage.image", contactImg],
 ];
-console.log("Mapping plan:");
+console.log(`Mapping plan${REDO ? " (--redo: replaces existing picks)" : ""}:`);
 for (const [field, value] of plan) {
   const desc = value?.files
     ? value.files.map((f) => f.file).join(", ")
-    : value?.file ?? "(no image found)";
+    : value?.file ?? "(no image found; pick one in the Studio)";
   console.log(`  ${field} ← ${desc}`);
 }
 console.log("");
+if (!portrait) {
+  console.log(
+    "No portrait of Courtney could be identified automatically. In the Studio, open Pages → Homepage → Introduction photograph and Pages → About → Portrait, and choose her photo from the Media library.\n"
+  );
+}
 
 if (DRY_RUN) {
   console.log("Dry run only: nothing was changed. Re-run without --dry-run to apply.");
@@ -304,21 +438,21 @@ if (DRY_RUN) {
 }
 
 await fillPage("homePage", {
-  heroImage: h[0] && photo(h[0].id, "Courtney Stockton Photography"),
-  heroImageSecondary: h[1] && photo(h[1].id),
-  introImage: a[0] && photo(a[0].id, "Portrait of Courtney Stockton"),
-  philosophyImages: h.slice(2, 5).length
-    ? h.slice(2, 5).map((img) => ({ ...photo(img.id), _key: key() }))
+  heroImage: hero && photo(hero.id, hero.alt ?? "Courtney Stockton Photography"),
+  heroImageSecondary: heroSecondary && photo(heroSecondary.id, heroSecondary.alt),
+  introImage: portrait && photo(portrait.id, "Portrait of Courtney Stockton"),
+  philosophyImages: philosophy.length
+    ? philosophy.map((img) => ({ ...photo(img.id, img.alt), _key: key() }))
     : null,
 });
 await fillPage("aboutPage", {
-  portrait: a[0] && photo(a[0].id, "Portrait of Courtney Stockton"),
-  photographs: a.slice(1, 3).length
-    ? a.slice(1, 3).map((img) => ({ ...photo(img.id), _key: key() }))
+  portrait: portrait && photo(portrait.id, "Portrait of Courtney Stockton"),
+  photographs: aboutPhotos.length
+    ? aboutPhotos.map((img) => ({ ...photo(img.id, img.alt), _key: key() }))
     : null,
 });
-await fillPage("investmentPage", { heroImage: info.assets[0] && photo(info.assets[0].id) });
-await fillPage("contactPage", { image: contact.assets[0] && photo(contact.assets[0].id) });
+await fillPage("investmentPage", { heroImage: infoHero && photo(infoHero.id, infoHero.alt) });
+await fillPage("contactPage", { image: contactImg && photo(contactImg.id, contactImg.alt) });
 
 console.log(
   "\nDone. Check the homepage, About, Investment and Contact pages; swap any image in the Studio if a guess missed (they're all in the Media library)."

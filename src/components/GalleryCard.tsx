@@ -19,7 +19,12 @@ export function GalleryCard({
   aspect = "4/5",
   priority = false,
 }: GalleryCardProps) {
-  const href = `${CATEGORY_META[gallery.category].path}/${gallery.slug}`;
+  // The "-highlights" galleries hold the photos shown directly on the
+  // portfolio pages, so their cards go straight there — one click, not two.
+  const isHighlights = gallery.slug.endsWith("-highlights");
+  const href = isHighlights
+    ? CATEGORY_META[gallery.category].path
+    : `${CATEGORY_META[gallery.category].path}/${gallery.slug}`;
   return (
     <Link href={href} className="group block">
       <div className="overflow-hidden bg-linen">
@@ -37,7 +42,9 @@ export function GalleryCard({
         </h3>
         <p className="label mt-1.5 text-taupe">
           {[gallery.venueName, gallery.location].filter(Boolean).join(" · ") ||
-            CATEGORY_META[gallery.category].plural}
+            (isHighlights
+              ? "View the collection"
+              : CATEGORY_META[gallery.category].plural)}
         </p>
       </div>
     </Link>

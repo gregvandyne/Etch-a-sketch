@@ -19,6 +19,7 @@ import {
   galleriesByCategoryQuery,
   galleryBySlugQuery,
   gallerySlugsQuery,
+  categoryPhotographsQuery,
   venuesQuery,
   venueBySlugQuery,
   venueSlugsQuery,
@@ -43,6 +44,7 @@ import type {
   GalleryTeaser,
   HomePage,
   InvestmentPage,
+  PhotoSource,
   Post,
   PostCategory,
   PostTeaser,
@@ -108,6 +110,36 @@ export async function getGalleries(category: GalleryCategory): Promise<GalleryTe
       tags: ["gallery"],
     })) ?? []
   );
+}
+
+/** Every photograph in a category (covers + gallery photos, deduped), so
+ *  the portfolio pages can show the work directly without a click into
+ *  each gallery. */
+export async function getCategoryPhotographs(
+  category: GalleryCategory
+): Promise<PhotoSource[]> {
+  if (usingSampleContent) {
+    return sample
+      .sampleGalleriesByCategory(category)
+      .flatMap((g) => sample.sampleGallery(category, g.slug)?.photographs ?? []);
+  }
+  const rows =
+    (await sanityFetch<{ coverImage?: PhotoSource; photographs?: PhotoSource[] }[]>({
+      query: categoryPhotographsQuery,
+      params: { category },
+      tags: ["gallery"],
+    })) ?? [];
+  const seen = new Set<string>();
+  const photos: PhotoSource[] = [];
+  for (const row of rows) {
+    for (const p of [row.coverImage, ...(row.photographs ?? [])]) {
+      const ref = p?.asset?._ref;
+      if (!ref || seen.has(ref)) continue;
+      seen.add(ref);
+      photos.push(p);
+    }
+  }
+  return photos;
 }
 
 export async function getGallery(
