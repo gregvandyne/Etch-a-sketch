@@ -54,9 +54,9 @@ export const aboutPageQuery = defineQuery(`*[_type == "aboutPage"][0]{
 }`);
 
 export const experiencePageQuery = defineQuery(`*[_type == "experiencePage"][0]{
-  heading, introText, heroImage ${IMG},
-  steps[]{ title, description, image ${IMG} },
-  closingText, ${SEO}
+  heading, introText, introAccent, heroImage ${IMG},
+  steps[]{ phase, title, description, image ${IMG} },
+  closingText, closingStatement, closingImage ${IMG}, ${SEO}
 }`);
 
 export const investmentPageQuery = defineQuery(`*[_type == "investmentPage"][0]{

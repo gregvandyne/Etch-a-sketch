@@ -132,6 +132,8 @@ export interface AboutPage {
 }
 
 export interface ExperienceStep {
+  /** Handwritten caption above the photograph, e.g. "before the wedding". */
+  phase?: string;
   title?: string;
   description?: string;
   image?: PhotoSource;
@@ -140,9 +142,16 @@ export interface ExperienceStep {
 export interface ExperiencePage {
   heading?: string;
   introText?: string;
+  /** Italic accent line beneath the introduction. */
+  introAccent?: string;
   heroImage?: PhotoSource;
   steps?: ExperienceStep[];
+  /** Paragraphs shown in the panel over the closing photograph. */
   closingText?: string;
+  /** Large caps line beside the closing paragraphs. */
+  closingStatement?: string;
+  /** Full-width photograph behind the closing words (shown black & white). */
+  closingImage?: PhotoSource;
   seo?: Seo;
 }
 
