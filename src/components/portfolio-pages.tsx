@@ -72,6 +72,7 @@ export async function CategoryPage({ category }: { category: CategoryKey }) {
           <CollageGallery
             photographs={photographs}
             asideFirst
+            eagerCount={4}
             aside={
               <div className="lg:pr-6">
                 <Label className="mb-5">The portfolio</Label>

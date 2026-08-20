@@ -96,7 +96,7 @@ export default async function HomePage() {
                   sizes="(min-width: 1024px) 42vw, 100vw"
                   aspect="3/2"
                   priority
-                  className="grayscale"
+                  desaturate
                 />
               </div>
             </div>
@@ -135,7 +135,7 @@ export default async function HomePage() {
               photo={home.heroImage}
               sizes="100vw"
               aspect="3/2"
-              className="grayscale"
+              desaturate
             />
           </div>
         </div>

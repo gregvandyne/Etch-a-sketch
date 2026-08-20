@@ -16,12 +16,15 @@ export function CollageGallery({
   photographs,
   aside,
   asideFirst = false,
+  eagerCount = 0,
 }: {
   photographs: PhotoSource[];
   /** Pinned text block (title, quote, links) that photos scroll past. */
   aside?: ReactNode;
   /** Pin the text on the left instead of the right. */
   asideFirst?: boolean;
+  /** How many leading photographs load eagerly (above-the-fold rows). */
+  eagerCount?: number;
 }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
 
@@ -42,6 +45,7 @@ export function CollageGallery({
         photo={photo}
         sizes={aside ? "(min-width: 1024px) 30vw, 50vw" : "(min-width: 1024px) 42vw, 50vw"}
         className="hover-zoom"
+        priority={index < eagerCount}
       />
     </button>
   );

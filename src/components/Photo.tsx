@@ -18,6 +18,11 @@ interface PhotoProps {
   aspect?: string;
   /** Sanity CDN quality (default 80 — high quality without huge payloads). */
   quality?: number;
+  /**
+   * Serve a black & white rendition. Done by the image CDN (saturation -100),
+   * never by a CSS filter, so the delivered file is the graded artifact.
+   */
+  desaturate?: boolean;
 }
 
 function parseAspect(aspect?: string, fallback?: number): number | undefined {
@@ -39,6 +44,7 @@ export function Photo({
   className = "",
   aspect,
   quality = 80,
+  desaturate = false,
 }: PhotoProps) {
   if (!photo) return null;
 
@@ -63,7 +69,11 @@ export function Photo({
         fetchPriority={fetchPriority}
         decoding="async"
         className={`block h-auto w-full object-cover ${className}`}
-        style={aspect ? { aspectRatio: aspect } : undefined}
+        style={{
+          aspectRatio: aspect || undefined,
+          // Placeholder art only — real photographs are desaturated by the CDN.
+          filter: desaturate ? "grayscale(1)" : undefined,
+        }}
       />
     );
   }
@@ -73,6 +83,7 @@ export function Photo({
   const buildUrl = (w: number) => {
     let b = urlFor(photo).width(w).quality(quality).fit("crop");
     if (aspect) b = b.height(Math.round(w / ratio));
+    if (desaturate) b = b.saturation(-100);
     return b.url();
   };
 
