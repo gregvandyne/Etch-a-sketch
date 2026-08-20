@@ -96,24 +96,31 @@ export const galleryBySlugQuery = defineQuery(`*[_type == "gallery" && slug.curr
   ${SEO}
 }`);
 
+/** A venue's weddings: linked by reference when the reference exists, but
+ *  migrated galleries carry the venue only in their titles — so a title
+ *  matching the venue's name counts too ("Viansa Winery" ↔ "Lisa & Zach |
+ *  Viansa Winery Wedding"). */
+const VENUE_GALLERIES = /* groq */ `*[_type == "gallery" && (venue._ref == ^._id || title match ^.name)]`;
+const VENUE_POSTS = /* groq */ `*[_type == "post" && (relatedVenue._ref == ^._id || title match ^.name)]`;
+
 /** A venue's card/hero image: its own photo when set, otherwise the cover of
- *  its newest gallery — migrated venues rarely carry a heroImage, but their
- *  weddings always have covers. */
+ *  its newest wedding, otherwise the newest matching journal post's photo. */
 const VENUE_IMAGE = /* groq */ `coalesce(
   select(defined(heroImage.asset) => heroImage),
-  *[_type == "gallery" && venue._ref == ^._id] | order(date desc)[0].coverImage
+  ${VENUE_GALLERIES} | order(date desc)[0].coverImage,
+  ${VENUE_POSTS} | order(publishedAt desc)[0].featuredImage
 ) ${IMG}`;
 
 export const venuesQuery = defineQuery(`*[_type == "venue" && defined(slug.current)] | order(name asc) {
   _id, name, "slug": slug.current, location, "heroImage": ${VENUE_IMAGE},
-  "galleryCount": count(*[_type == "gallery" && venue._ref == ^._id])
+  "galleryCount": count(${VENUE_GALLERIES})
 }`);
 
 export const venueBySlugQuery = defineQuery(`*[_type == "venue" && slug.current == $slug][0]{
   _id, name, "slug": slug.current, location, "heroImage": ${VENUE_IMAGE},
   description, photographs[] ${IMG}, website,
-  "galleries": *[_type == "gallery" && venue._ref == ^._id] | order(date desc) ${GALLERY_TEASER},
-  "posts": *[_type == "post" && relatedVenue._ref == ^._id] | order(publishedAt desc) ${POST_TEASER},
+  "galleries": ${VENUE_GALLERIES} | order(date desc) ${GALLERY_TEASER},
+  "posts": ${VENUE_POSTS} | order(publishedAt desc) ${POST_TEASER},
   ${SEO}
 }`);
 
