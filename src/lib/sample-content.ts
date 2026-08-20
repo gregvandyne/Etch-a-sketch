@@ -286,35 +286,43 @@ export const sampleAboutPage: AboutPage = {
   ],
 };
 
+// VERIFIED copy: the text below is Courtney's own, from the live /experience page.
 export const sampleExperiencePage: ExperiencePage = {
-  heading: "The Experience",
+  heading: "the experience",
   introText:
-    "Beautiful galleries begin long before the first photograph. Here is what working together looks like, from your first note to the day your gallery arrives.",
-  heroImage: P.wide(1, "Courtney photographing a couple in the vineyard"),
+    "Your wedding day is not a photoshoot. It is a celebration of the people you love, the memories you are creating, and the little moments you never want to forget.\n\nMy role is to create photographs that feel elevated and timeless while making sure you are fully present for the experience itself. I'll guide you when you need it, step back when the moment deserves it, and quietly pay attention to everything happening around you.\n\nBecause the best photographs often come when you are simply enjoying your day.",
+  introAccent: "Beautiful photographs. A wedding day you actually get to enjoy.",
+  heroImage: P.portrait(1, "Newlyweds leaving the barn reception hand in hand"),
   steps: [
     {
-      title: "Say hello",
+      phase: "before the wedding",
+      title: "Thoughtful preparation, without the overwhelm",
       description:
-        "Share your date, your venue if you have one, and what you're dreaming up. I'll reply personally with availability and everything you need to decide if we're a fit.",
+        "Every couple and every wedding is different, so I take time to understand what matters most to you.\n\nBefore your wedding, I'll help you create a photography timeline that allows room for beautiful portraits while still giving you plenty of time to celebrate with your favorite people. I'll send a questionnaire to learn more about your plans, help with engagement session locations, and happily share vendor recommendations from the talented people I've loved working alongside throughout Sonoma and Napa wine country.\n\nMy goal is for you to feel confident and cared for before you ever step in front of my camera.",
     },
     {
-      title: "We plan together",
+      phase: "the engagement session",
+      title: "A chance to slow down and enjoy this season",
       description:
-        "From timelines to light, I'll help you shape a day that leaves room for the moments that matter. You'll never be left guessing what happens next.",
+        "Engagement sessions are about more than taking beautiful photos. They are a chance to get comfortable together, celebrate this season of life, and have fun before the wedding day arrives.\n\nWhether we are exploring the coastal cliffs of the Marin Headlands, wandering through the hills at Alston Park, or finding another location that feels like you, I'll guide you through the process while leaving room for the natural moments that make your relationship unique.\n\nI photograph engagements with both digital and film, creating images that feel relaxed, personal, and full of personality.",
     },
     {
-      title: "Your day, gently guided",
+      phase: "on the wedding day",
+      title: "Calm direction when you need it. Space when you don't.",
       description:
-        "I'll direct when you need it and disappear when you don't, keeping portraits relaxed, details remembered, and the real moments untouched.",
+        "My approach is calm, observant, and intentional. I want to feel like both a trusted friend and a quiet presence in the background.\n\nI'll notice the small things: the way your family looks at you during the ceremony, the friend who makes everyone laugh, the light changing across the vineyard, and the moments happening just outside the timeline.\n\nFor weddings, I'm joined by my husband, Joey, which allows us to preserve even more of your story without adding more interruption to your day. You get two perspectives and a fuller story, while still having the space to be fully present.",
     },
     {
-      title: "Your gallery arrives",
+      phase: "after the celebration",
+      title: "Photographs meant to be revisited",
       description:
-        "A curated online gallery of finished photographs, ready to share, print and keep. Heirloom albums and prints are available for the images you love most.",
+        "After your wedding, I'll send a preview gallery within 48 hours so you can relive some of your favorite moments while the memories are still fresh.\n\nYour full gallery will be delivered within one month, filled with a balance of elegant portraits, joyful celebrations, and the quiet in-between moments that tell the full story of your day.\n\nI believe photographs are meant to be lived with, not just stored on a computer. I offer heirloom albums, gallery wraps, and fine art prints so your memories can become part of your home and your everyday life.",
     },
   ],
   closingText:
-    "Every wedding and session is different, and that's the point. If this sounds like the kind of photography you want, I'd love to hear your plans.",
+    "You care about the details. The flowers, the setting, the dress, the thoughtful touches that make your wedding feel like yours.\n\nBut you care even more about the people gathered around you.\n\nYou want beautiful photographs, but you also want to laugh with your friends, savor the meal, dance until the end of the night, and remember what it felt like to be surrounded by everyone you love.\n\nThat balance is what I love to photograph: the beauty you planned and the moments you never could have.\n\nI would be honored to preserve your story.",
+  closingStatement: "For couples who want both beauty and breathing room",
+  closingImage: P.wide(1, "Bride and groom laughing among the trees"),
 };
 
 export const sampleInvestmentPage: InvestmentPage = {
