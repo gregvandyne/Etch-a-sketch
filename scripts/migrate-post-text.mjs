@@ -343,36 +343,47 @@ for (const post of targets) {
 
   const existingBody = Array.isArray(doc.body) ? doc.body : [];
   const hasWrittenText = existingBody.some((b) => b._type === "block");
-  if (hasWrittenText) {
-    skipped += 1;
-    log(`↷ ${post.slug}: story already has written text; left untouched`);
-    await sleep(REQUEST_DELAY_MS);
-    continue;
+
+  const sets = {};
+  const unsets = [];
+
+  // Story: only when it has no written text yet (never clobber a done story).
+  let bodyNote = "story already written, untouched";
+  if (!hasWrittenText) {
+    const { blocks, usedAssets } = htmlToBlocks(wp.content.rendered, resolveImage);
+    const leftover = existingBody.filter(
+      (b) => b._type === "photograph" && b.asset?._ref && !usedAssets.has(b.asset._ref)
+    );
+    sets.body = [...blocks, ...leftover];
+    const textCount = blocks.filter((b) => b._type === "block").length;
+    bodyNote = `${textCount} text blocks, ${sets.body.length - textCount} photographs`;
   }
 
-  const { blocks, usedAssets } = htmlToBlocks(wp.content.rendered, resolveImage);
-  // Keep image-migration photographs the text does not already place.
-  const leftover = existingBody.filter(
-    (b) => b._type === "photograph" && b.asset?._ref && !usedAssets.has(b.asset._ref)
-  );
-  const body = [...blocks, ...leftover];
-  const textCount = blocks.filter((b) => b._type === "block").length;
-  const imageCount = body.length - textCount;
-
-  const sets = { body };
+  // Date and summary update even when the story is already done, so re-runs
+  // repair posts processed by earlier versions of this script.
   if (wp.date_gmt) sets.publishedAt = `${wp.date_gmt}Z`.replace("ZZ", "Z");
-  const excerpt = strip(wp.excerpt?.rendered).replace(/\s*\[…\]$/, "…").slice(0, 300);
-  // The seed pre-fills the summary with a "Draft carried over…" placeholder;
-  // treat that as empty so the real WordPress excerpt replaces it.
+
   const excerptIsPlaceholder =
     !doc.excerpt || doc.excerpt.startsWith("Draft carried over from the previous website");
-  if (excerptIsPlaceholder && excerpt) sets.excerpt = excerpt;
+  if (excerptIsPlaceholder) {
+    let excerpt = strip(wp.excerpt?.rendered).replace(/\s*\[…\]$/, "…").slice(0, 300);
+    if (!excerpt) {
+      // No WordPress excerpt: derive one from the first written paragraph.
+      const source = sets.body ?? existingBody;
+      const firstText = source.find((b) => b._type === "block" && b.style === "normal");
+      excerpt = (firstText?.children ?? []).map((c) => c.text).join("").trim().slice(0, 200);
+    }
+    if (excerpt) sets.excerpt = excerpt;
+    else if (doc.excerpt) unsets.push("excerpt"); // clear the placeholder outright
+  }
 
   log(
-    `• ${post.slug}: ${textCount} text blocks, ${imageCount} photographs, date ${wp.date_gmt?.slice(0, 10) ?? "unknown"}${DRY_RUN ? " (dry-run)" : ""}`
+    `• ${post.slug}: ${bodyNote}, date ${wp.date_gmt?.slice(0, 10) ?? "unknown"}${sets.excerpt ? ", summary updated" : ""}${DRY_RUN ? " (dry-run)" : ""}`
   );
-  if (!DRY_RUN) {
-    await client.patch(docId).set(sets).commit();
+  if (!DRY_RUN && (Object.keys(sets).length > 0 || unsets.length > 0)) {
+    let patch = client.patch(docId).set(sets);
+    if (unsets.length > 0) patch = patch.unset(unsets);
+    await patch.commit();
     filled += 1;
   }
   await sleep(REQUEST_DELAY_MS);
