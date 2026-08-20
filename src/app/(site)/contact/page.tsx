@@ -41,7 +41,9 @@ export default async function ContactPage() {
             </p>
           ) : null}
           <div className="mt-10 hidden lg:block">
-            <Photo photo={page.image} sizes="(min-width: 1024px) 360px, 0px" aspect="3/4" />
+            {/* Native aspect ratio on purpose: this photograph may carry
+                lettering, and a forced crop cuts it off. */}
+            <Photo photo={page.image} sizes="(min-width: 1024px) 360px, 0px" />
           </div>
         </div>
         <div className="lg:col-span-7 lg:col-start-6">
