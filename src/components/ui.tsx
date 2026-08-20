@@ -8,7 +8,7 @@ export function Label({ children, className = "" }: { children: ReactNode; class
   return <p className={`label ${className}`}>{children}</p>;
 }
 
-/** Editorial display heading. */
+/** Section heading in the site's airy spaced-caps voice. */
 export function Heading({
   as: Tag = "h2",
   children,
@@ -20,11 +20,11 @@ export function Heading({
 }) {
   const size =
     Tag === "h1"
-      ? "text-4xl sm:text-5xl lg:text-6xl"
+      ? "text-2xl sm:text-3xl lg:text-[2.6rem]"
       : Tag === "h2"
-        ? "text-3xl sm:text-4xl lg:text-5xl"
-        : "text-2xl sm:text-3xl";
-  return <Tag className={`font-display text-ink ${size} ${className}`}>{children}</Tag>;
+        ? "text-xl sm:text-2xl lg:text-3xl"
+        : "text-lg sm:text-xl";
+  return <Tag className={`font-heading text-ink ${size} ${className}`}>{children}</Tag>;
 }
 
 /** Understated text link with a hairline underline. */
