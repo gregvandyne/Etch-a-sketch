@@ -116,7 +116,7 @@ export default async function HomePage() {
                 {/* The diamond is a rotated backdrop; the text stays level. */}
                 <span
                   aria-hidden="true"
-                  className="absolute inset-3 rotate-45 bg-ivory shadow-[0_2px_14px_rgba(29,27,24,0.14)] transition-colors group-hover:bg-parchment"
+                  className="absolute inset-3 rotate-45 border border-linen bg-ivory transition-colors group-hover:bg-parchment"
                 />
                 <span className="relative text-center">
                   <span className="font-display block text-sm italic text-umber">View the</span>
@@ -143,7 +143,7 @@ export default async function HomePage() {
 
       {/* ——— Introduction: ghosted wordmark over Courtney's bio ——— */}
       <section>
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-28">
           <div className="grid items-center gap-12 lg:grid-cols-12">
             <div className="reveal mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
               <Photo
@@ -176,7 +176,7 @@ export default async function HomePage() {
 
       {/* ——— The manifesto: cream band, matted photograph ——— */}
       <section className="bg-cream">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-32">
           <div className="grid items-center gap-12 lg:grid-cols-12">
             <div className="reveal mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
               <div className="relative bg-white p-4 sm:p-6">
@@ -218,7 +218,7 @@ export default async function HomePage() {
 
       {/* ——— Portfolio: photo columns scroll past the pinned text ——— */}
       <section>
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-32">
           <CollageGallery
             photographs={collage}
             aside={
@@ -237,7 +237,7 @@ export default async function HomePage() {
                     <li key={key}>
                       <Link
                         href={meta.path}
-                        className="font-heading text-lg text-charcoal transition-colors hover:text-wine sm:text-xl"
+                        className="font-heading text-lg text-charcoal underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current sm:text-xl"
                       >
                         {meta.plural}
                       </Link>
@@ -253,7 +253,7 @@ export default async function HomePage() {
       {/* ——— Featured stories ——— */}
       {featured.length > 0 ? (
         <section className="border-t border-linen">
-          <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
+          <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-32">
             <div className="reveal mb-14 flex flex-wrap items-end justify-between gap-6">
               <div>
                 <Label className="mb-5">Featured stories</Label>
@@ -274,7 +274,7 @@ export default async function HomePage() {
 
       {/* ——— The experience ——— */}
       <section className="bg-charcoal text-ivory">
-        <div className="mx-auto max-w-4xl px-5 py-20 text-center sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-4xl px-5 py-20 text-center sm:px-8 lg:py-32">
           <Label className="reveal mb-5 text-sand">Working together</Label>
           <h2 className="reveal font-heading text-2xl text-ivory sm:text-3xl">
             Gently guided, honestly told
@@ -287,7 +287,7 @@ export default async function HomePage() {
           <div className="reveal mt-9">
             <Link
               href="/experience"
-              className="label inline-block border border-ivory px-8 py-4 text-ivory transition-colors duration-200 hover:bg-ivory hover:text-charcoal"
+              className="label inline-block border border-ivory px-8 py-4 text-ivory transition-colors hover:bg-ivory hover:text-charcoal"
             >
               Discover the Experience
             </Link>
@@ -300,7 +300,7 @@ export default async function HomePage() {
 
       {/* ——— Service area / local SEO ——— */}
       <section>
-        <div className="mx-auto max-w-3xl px-5 py-20 text-center sm:px-8 lg:py-24">
+        <div className="mx-auto max-w-3xl px-5 py-20 text-center sm:px-8 lg:py-28">
           <Label className="reveal mb-5">Where</Label>
           <h2 className="reveal font-heading text-2xl text-ink sm:text-3xl">
             Rooted in wine country

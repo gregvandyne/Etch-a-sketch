@@ -57,7 +57,7 @@ export async function Footer() {
                 <TrackedLink
                   href={`mailto:${settings.email}`}
                   event="Email Link Clicked"
-                  className="font-display text-lg italic text-charcoal hover:text-wine"
+                  className="font-display text-lg italic text-charcoal underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current"
                 >
                   {settings.email}
                 </TrackedLink>

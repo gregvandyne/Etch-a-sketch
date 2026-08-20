@@ -93,7 +93,7 @@ export function Photo({
       className={`block h-auto w-full object-cover ${className}`}
       style={{
         aspectRatio: aspect ?? undefined,
-        backgroundColor: "#e9e3d8",
+        backgroundColor: "var(--color-linen)",
         backgroundImage: photo.lqip ? `url(${photo.lqip})` : undefined,
         backgroundSize: "cover",
       }}

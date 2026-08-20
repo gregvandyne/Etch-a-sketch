@@ -85,7 +85,7 @@ export async function CategoryPage({ category }: { category: CategoryKey }) {
                     <li key={key}>
                       <Link
                         href={CATEGORY_META[key].path}
-                        className="font-heading text-base text-charcoal transition-colors hover:text-wine"
+                        className="font-heading text-base text-charcoal underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current"
                       >
                         {CATEGORY_META[key].plural}
                       </Link>
@@ -259,7 +259,7 @@ export async function GalleryPage({
                       <li key={post._id}>
                         <Link
                           href={`/${post.slug}`}
-                          className="font-display text-xl text-charcoal hover:text-wine"
+                          className="font-display text-xl text-charcoal underline decoration-transparent underline-offset-4 transition-colors hover:decoration-current"
                         >
                           {post.title}
                         </Link>

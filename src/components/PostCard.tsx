@@ -24,7 +24,7 @@ export function PostCard({ post, priority = false }: { post: PostTeaser; priorit
             sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
             aspect="4/3"
             priority={priority}
-            className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            className="transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.03]"
           />
         </div>
         <div className="mt-5">
@@ -33,7 +33,7 @@ export function PostCard({ post, priority = false }: { post: PostTeaser; priorit
               {[date, post.categories?.[0]?.title].filter(Boolean).join("  ·  ")}
             </p>
           )}
-          <h2 className="font-display text-2xl leading-snug text-ink transition-colors group-hover:text-wine">
+          <h2 className="font-display text-2xl leading-snug text-ink underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-current">
             {post.title}
           </h2>
           {post.excerpt ? (

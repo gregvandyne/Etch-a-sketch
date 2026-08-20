@@ -33,11 +33,11 @@ export function GalleryCard({
           sizes={sizes}
           aspect={aspect}
           priority={priority}
-          className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          className="transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.03]"
         />
       </div>
       <div className="mt-4">
-        <h3 className="font-display text-xl text-ink transition-colors group-hover:text-wine sm:text-2xl">
+        <h3 className="font-display text-xl text-ink underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-current sm:text-2xl">
           {gallery.title}
         </h3>
         <p className="label mt-1.5 text-taupe">

@@ -57,7 +57,7 @@ export default async function SiteLayout({
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/api/draft-mode/disable"
-            className="label fixed bottom-4 right-4 z-[90] bg-wine px-4 py-3 text-ivory shadow-lg"
+            className="label fixed bottom-4 right-4 z-[90] border border-ivory/30 bg-charcoal px-4 py-3 text-ivory"
           >
             Previewing drafts · Exit
           </a>

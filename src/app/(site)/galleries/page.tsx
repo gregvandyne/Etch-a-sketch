@@ -43,11 +43,11 @@ export default async function GalleriesPage() {
                     sizes="(min-width: 1024px) 400px, 100vw"
                     aspect="3/4"
                     priority={i === 0}
-                    className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    className="transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.03]"
                   />
                 </div>
                 <div className="mt-5 text-center">
-                  <h2 className="font-display text-3xl text-ink group-hover:text-wine">
+                  <h2 className="font-display text-3xl text-ink underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-current">
                     {meta.plural}
                   </h2>
                   <p className="label mt-2 text-taupe">View the gallery →</p>

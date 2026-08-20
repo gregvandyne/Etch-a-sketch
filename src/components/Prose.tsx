@@ -29,7 +29,7 @@ const components: PortableTextComponents = {
     link: ({ children, value }) => (
       <a
         href={value?.href}
-        className="border-b border-taupe text-charcoal transition-colors hover:border-charcoal hover:text-wine"
+        className="border-b border-taupe text-charcoal transition-colors hover:border-charcoal"
         {...(value?.href?.startsWith("http")
           ? { target: "_blank", rel: "noopener noreferrer" }
           : {})}

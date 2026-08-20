@@ -38,11 +38,11 @@ export default async function VenuesPage() {
                     sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
                     aspect="4/3"
                     priority={i < 3}
-                    className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    className="transition-transform duration-[var(--dur-mid)] ease-out group-hover:scale-[1.03]"
                   />
                 </div>
                 <div className="mt-4">
-                  <h2 className="font-display text-2xl text-ink group-hover:text-wine">
+                  <h2 className="font-display text-2xl text-ink underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-current">
                     {venue.name}
                   </h2>
                   <p className="label mt-1.5 text-taupe">
