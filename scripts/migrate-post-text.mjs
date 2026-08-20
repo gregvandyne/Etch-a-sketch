@@ -40,6 +40,9 @@ const args = process.argv.slice(2);
 const DRY_RUN = args.includes("--dry-run");
 const SELF_TEST = args.includes("--self-test");
 const INCLUDE_PUBLISHED = args.includes("--include-published");
+// Recompute every summary, replacing whatever is there. Use to re-apply
+// improved summary cleanup; avoid after summaries have been hand-edited.
+const REFRESH_SUMMARIES = args.includes("--refresh-summaries");
 const limitIdx = args.indexOf("--limit");
 const LIMIT = limitIdx !== -1 ? Number(args[limitIdx + 1]) : Infinity;
 
@@ -272,6 +275,23 @@ const targets = posts.slice(0, LIMIT);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const strip = (html) => html?.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim() || "";
 
+/** Cut at a word boundary, never mid-word, with a tidy ellipsis. */
+function truncateAtWord(text, max) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${cut.slice(0, lastSpace > max * 0.6 ? lastSpace : max).replace(/[,.;:]$/, "")}…`;
+}
+
+/** WordPress excerpt HTML → clean plain-text summary. */
+function cleanExcerpt(raw) {
+  const text = decodeEntities(strip(raw))
+    .replace(/\s*\[(…|\.\.\.)\]\s*$/, "…")
+    .replace(/…+$/, "…")
+    .trim();
+  return truncateAtWord(text, 220);
+}
+
 const report = [];
 const log = (line) => {
   console.log(line);
@@ -400,16 +420,19 @@ for (const post of targets) {
 
   const excerptIsPlaceholder =
     !doc.excerpt || doc.excerpt.startsWith("Draft carried over from the previous website");
-  if (excerptIsPlaceholder) {
-    let excerpt = strip(wp.excerpt?.rendered).replace(/\s*\[…\]$/, "…").slice(0, 300);
+  if (excerptIsPlaceholder || REFRESH_SUMMARIES) {
+    let excerpt = cleanExcerpt(wp.excerpt?.rendered);
     if (!excerpt) {
       // No WordPress excerpt: derive one from the first written paragraph.
       const source = sets.body ?? existingBody;
       const firstText = source.find((b) => b._type === "block" && b.style === "normal");
-      excerpt = (firstText?.children ?? []).map((c) => c.text).join("").trim().slice(0, 200);
+      excerpt = truncateAtWord(
+        (firstText?.children ?? []).map((c) => c.text).join("").trim(),
+        220
+      );
     }
-    if (excerpt) sets.excerpt = excerpt;
-    else if (doc.excerpt) unsets.push("excerpt"); // clear the placeholder outright
+    if (excerpt && excerpt !== doc.excerpt) sets.excerpt = excerpt;
+    else if (!excerpt && doc.excerpt && excerptIsPlaceholder) unsets.push("excerpt");
   }
 
   log(
