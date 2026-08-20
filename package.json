@@ -10,7 +10,9 @@
     "qa": "node scripts/qa.mjs",
     "seed:legacy": "node scripts/generate-legacy-seed.mjs",
     "migrate:images": "node scripts/migrate-images.mjs",
-    "migrate:text": "node scripts/migrate-post-text.mjs"
+    "migrate:text": "node scripts/migrate-post-text.mjs",
+    "publish:posts": "node scripts/publish-posts.mjs",
+    "migrate:pages": "node scripts/migrate-page-images.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
