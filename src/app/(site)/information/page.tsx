@@ -2,8 +2,9 @@ import { ContentViewTracker } from "@/components/ContentViewTracker";
 import { Photo } from "@/components/Photo";
 import { Prose } from "@/components/Prose";
 import { Heading, InquireBand, Label } from "@/components/ui";
-import { getInvestmentPage } from "@/lib/content";
+import { getCategoryPhotographs, getInvestmentPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import type { GalleryCategory, PhotoSource } from "@/lib/types";
 
 // Preserves the existing /information URL from the previous website.
 export async function generateMetadata() {
@@ -18,8 +19,45 @@ export async function generateMetadata() {
   });
 }
 
+const photoKey = (p?: PhotoSource | null) => p?.placeholder ?? p?.asset?._ref ?? "";
+const hasImage = (p?: PhotoSource | null) => Boolean(p?.asset || p?.placeholder);
+
 export default async function InformationPage() {
-  const page = await getInvestmentPage();
+  const [page, weddingPhotos, engagementPhotos, familyPhotos] = await Promise.all([
+    getInvestmentPage(),
+    getCategoryPhotographs("wedding"),
+    getCategoryPhotographs("engagement"),
+    getCategoryPhotographs("family"),
+  ]);
+
+  // Offerings without a CMS image borrow a portfolio photograph that matches
+  // what the offering is about, never repeating one on the page. An image
+  // set in the Studio always wins.
+  const pools: Record<GalleryCategory, PhotoSource[]> = {
+    wedding: weddingPhotos,
+    engagement: engagementPhotos,
+    family: familyPhotos,
+  };
+  const used = new Set(
+    [page.heroImage, ...(page.offerings ?? []).map((o) => o.image)]
+      .filter(hasImage)
+      .map(photoKey)
+  );
+  const fallbackFor = (title = "") => {
+    const t = title.toLowerCase();
+    const category: GalleryCategory = /family|little|kid|maternity|senior/.test(t)
+      ? "family"
+      : /engage|proposal|couple/.test(t)
+        ? "engagement"
+        : "wedding";
+    const photo = pools[category].find((p) => !used.has(photoKey(p)));
+    if (photo) used.add(photoKey(photo));
+    return photo;
+  };
+  const offerings = (page.offerings ?? []).map((o) => ({
+    ...o,
+    image: hasImage(o.image) ? o.image : fallbackFor(o.title),
+  }));
 
   return (
     <>
@@ -44,27 +82,28 @@ export default async function InformationPage() {
           </div>
         ) : null}
 
-        {/* Offerings */}
-        {page.offerings && page.offerings.length > 0 ? (
+        {/* Offerings — photograph beside every entry, alternating sides */}
+        {offerings.length > 0 ? (
           <div className="mx-auto mt-20 max-w-5xl space-y-20">
-            {page.offerings.map((offering, i) => (
-              <section
-                key={i}
-                className={`reveal grid items-center gap-8 lg:grid-cols-12 ${
-                  i % 2 === 1 ? "" : ""
-                }`}
-              >
+            {offerings.map((offering, i) => (
+              <section key={i} className="reveal grid items-center gap-8 lg:grid-cols-12">
+                {hasImage(offering.image) ? (
+                  <div
+                    className={`lg:col-span-5 ${i % 2 === 1 ? "lg:order-2 lg:col-start-8" : ""}`}
+                  >
+                    <Photo
+                      photo={offering.image}
+                      sizes="(min-width: 1024px) 430px, 100vw"
+                      aspect="4/5"
+                    />
+                  </div>
+                ) : null}
                 <div
-                  className={`lg:col-span-5 ${i % 2 === 1 ? "lg:order-2 lg:col-start-8" : ""}`}
-                >
-                  <Photo
-                    photo={offering.image}
-                    sizes="(min-width: 1024px) 430px, 100vw"
-                    aspect="4/5"
-                  />
-                </div>
-                <div
-                  className={`lg:col-span-6 ${i % 2 === 1 ? "lg:order-1 lg:col-start-1" : "lg:col-start-7"}`}
+                  className={
+                    hasImage(offering.image)
+                      ? `lg:col-span-6 ${i % 2 === 1 ? "lg:order-1 lg:col-start-1" : "lg:col-start-7"}`
+                      : "lg:col-span-8 lg:col-start-3"
+                  }
                 >
                   <h2 className="font-display text-3xl text-ink sm:text-4xl">
                     {offering.title}
