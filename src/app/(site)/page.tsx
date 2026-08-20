@@ -179,28 +179,27 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-32">
           <div className="grid items-center gap-12 lg:grid-cols-12">
             <div className="reveal mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
-              <div className="relative bg-white p-4 sm:p-6">
+              {/* Matted print: the caption sits on the mat, like a gallery
+                  label, never over the photograph. */}
+              <div className="bg-white p-4 pb-6 sm:p-6 sm:pb-8">
                 <Photo
                   photo={matted}
                   sizes="(min-width: 1024px) 34vw, (min-width: 640px) 400px, 90vw"
                   aspect="3/4"
                 />
-                <p className="absolute inset-x-8 top-12 text-center sm:top-16">
+                <p className="mt-5 text-center sm:mt-6">
                   <span className="font-display text-lg italic text-ink/80">
                     Capturing your love should be
                   </span>
-                  <span className="label mt-2 block text-ink">Effortless</span>
+                  <span className="label mt-1.5 block text-ink">Effortless</span>
                 </p>
               </div>
             </div>
             <div className="reveal lg:col-span-6 lg:col-start-7">
-              <h2 className="font-heading text-4xl leading-[1.3] text-ivory sm:text-5xl lg:text-6xl">
-                <span aria-hidden="true">
-                  CSP
-                  <br />
-                  Manifesto
-                </span>
-                <span className="sr-only">The Courtney Stockton Photography manifesto</span>
+              <h2 className="font-heading text-4xl leading-[1.3] text-taupe sm:text-5xl lg:text-6xl">
+                CSP
+                <br />
+                Manifesto
               </h2>
               <p className="label mt-10">
                 {home.philosophyHeading ?? "Honest moments, beautifully preserved"}
