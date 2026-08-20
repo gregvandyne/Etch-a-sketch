@@ -96,13 +96,21 @@ export const galleryBySlugQuery = defineQuery(`*[_type == "gallery" && slug.curr
   ${SEO}
 }`);
 
+/** A venue's card/hero image: its own photo when set, otherwise the cover of
+ *  its newest gallery — migrated venues rarely carry a heroImage, but their
+ *  weddings always have covers. */
+const VENUE_IMAGE = /* groq */ `coalesce(
+  select(defined(heroImage.asset) => heroImage),
+  *[_type == "gallery" && venue._ref == ^._id] | order(date desc)[0].coverImage
+) ${IMG}`;
+
 export const venuesQuery = defineQuery(`*[_type == "venue" && defined(slug.current)] | order(name asc) {
-  _id, name, "slug": slug.current, location, heroImage ${IMG},
+  _id, name, "slug": slug.current, location, "heroImage": ${VENUE_IMAGE},
   "galleryCount": count(*[_type == "gallery" && venue._ref == ^._id])
 }`);
 
 export const venueBySlugQuery = defineQuery(`*[_type == "venue" && slug.current == $slug][0]{
-  _id, name, "slug": slug.current, location, heroImage ${IMG},
+  _id, name, "slug": slug.current, location, "heroImage": ${VENUE_IMAGE},
   description, photographs[] ${IMG}, website,
   "galleries": *[_type == "gallery" && venue._ref == ^._id] | order(date desc) ${GALLERY_TEASER},
   "posts": *[_type == "post" && relatedVenue._ref == ^._id] | order(publishedAt desc) ${POST_TEASER},

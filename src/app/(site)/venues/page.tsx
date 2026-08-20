@@ -33,13 +33,18 @@ export default async function VenuesPage() {
             {venues.map((venue, i) => (
               <Link key={venue._id} href={`/venues/${venue.slug}`} className="group reveal block">
                 <div className="overflow-hidden bg-linen">
-                  <Photo
-                    photo={venue.heroImage}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    aspect="4/3"
-                    priority={i < 3}
-                    className="hover-zoom"
-                  />
+                  {venue.heroImage ? (
+                    <Photo
+                      photo={venue.heroImage}
+                      sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                      aspect="4/3"
+                      priority={i < 3}
+                      className="hover-zoom"
+                    />
+                  ) : (
+                    // Keeps the card's shape for a venue with no imagery yet.
+                    <div className="aspect-[4/3]" />
+                  )}
                 </div>
                 <div className="mt-4">
                   <h2 className="font-display text-2xl text-ink underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-current">
