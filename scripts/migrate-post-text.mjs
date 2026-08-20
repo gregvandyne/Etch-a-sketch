@@ -362,7 +362,11 @@ for (const post of targets) {
   const sets = { body };
   if (wp.date_gmt) sets.publishedAt = `${wp.date_gmt}Z`.replace("ZZ", "Z");
   const excerpt = strip(wp.excerpt?.rendered).replace(/\s*\[…\]$/, "…").slice(0, 300);
-  if (!doc.excerpt && excerpt) sets.excerpt = excerpt;
+  // The seed pre-fills the summary with a "Draft carried over…" placeholder;
+  // treat that as empty so the real WordPress excerpt replaces it.
+  const excerptIsPlaceholder =
+    !doc.excerpt || doc.excerpt.startsWith("Draft carried over from the previous website");
+  if (excerptIsPlaceholder && excerpt) sets.excerpt = excerpt;
 
   log(
     `• ${post.slug}: ${textCount} text blocks, ${imageCount} photographs, date ${wp.date_gmt?.slice(0, 10) ?? "unknown"}${DRY_RUN ? " (dry-run)" : ""}`

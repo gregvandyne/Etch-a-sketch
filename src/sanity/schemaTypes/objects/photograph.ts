@@ -10,6 +10,13 @@ export const photographType = defineType({
   title: "Photograph",
   type: "image",
   options: { hotspot: true },
+  preview: {
+    select: { alt: "alt", caption: "caption", media: "asset" },
+    prepare: ({ alt, caption, media }) => ({
+      title: alt || caption || "Photograph",
+      media,
+    }),
+  },
   fields: [
     defineField({
       name: "alt",
